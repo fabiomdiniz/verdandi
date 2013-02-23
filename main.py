@@ -3,7 +3,7 @@
 from bottle import route, run, view, static_file
 import os.path
 
-from markets.models import MARKETS
+from markets import MARKETS
 from markets import util
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
@@ -15,9 +15,9 @@ def index():
     return dict()
 
 
-@route('/brazil')
-def brazil():
-    market = util.get_market(0)
+@route('/market/<ref>')
+def get_market(ref):
+    market = util.get_market(int(ref))
 
     stocks = market.stocks
     return '<br>'.join([' '.join(map(str, [s.name.code, s.name.name, s.value, s.diff])) for s in stocks])
