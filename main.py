@@ -16,6 +16,12 @@ def index():
     return dict()
 
 
+@route('/2')
+@view('index_2')
+def index_2():
+    return dict()
+
+
 @route('/market/<ref>')
 def get_market(ref):
     market = markets.util.get_market(int(ref))
