@@ -22,6 +22,6 @@ def get_market():
         name = util.clean_string(tds[1].string)
         value = util.get_float(tds[2].string)
         diff = util.get_float(tds[3].text.strip())
-        stock = Stock(name=util.get_or_create_name(0, name, code),
+        stock = Stock(name=util.get_or_create_name(0, code, name),
                       value=value, diff=diff, market=market.key())
         stock.put()

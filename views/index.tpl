@@ -3,14 +3,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Svipul</title>
+    <title>Verdandi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
     <!-- Le styles -->
     <link href="static/css/bootstrap.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Old+Standard+TT' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:700' rel='stylesheet' type='text/css'>
     <style type="text/css">
     body { 
         background: url(static/img/back.png) no-repeat center center fixed; 
@@ -21,7 +22,7 @@
 
     }
     h1 {
-        font-family: "Century Gothic","Lucida Grande",Arial,sans-serif;
+        font-family: 'Lato', serif;
         color: black;
     }
     /* Custom container */
@@ -40,6 +41,7 @@
     .title h1 {
         font-size: 100px;
         line-height: 1;
+        padding-left: 10px;
     }
     .jumbotron .lead {
         font-size: 24px;

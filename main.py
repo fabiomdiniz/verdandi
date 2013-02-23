@@ -23,7 +23,7 @@ def get_market(ref):
     return '<br>'.join([' '.join(map(str, [s.name.code, s.name.name, s.value, s.diff])) for s in stocks])
 
 
-@route('/run_markets')
+@route('/cron/run_markets')
 def run_markets():
     result = []
     for i, market in enumerate(MARKETS):

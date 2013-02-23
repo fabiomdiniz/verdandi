@@ -2,6 +2,7 @@
 
 from google.appengine.ext import db
 
+
 class Market(db.Model):
     ref = db.IntegerProperty()
     date = db.DateProperty(auto_now_add=True)
