@@ -73,12 +73,21 @@
        width: 90%; 
     }
 
-    .hover_text span.spacer {
+    span.spacer {
        padding:0 5px;
     }
 
     #norn_desc {
         opacity: 0;
+    }
+
+    #portfolio_table td, #portfolio_table th {
+        text-align: center;
+    }
+
+    .icon-remove {
+       cursor:pointer;
+        
     }
 
     </style>
@@ -123,6 +132,7 @@
                 Norn of the present, easy AI
               </p>
 
+              <div class="well form-horizontal">
               <h4>Difficulty</h4>
               <p>
                 <div class="btn-group" data-toggle="buttons-radio">
@@ -130,7 +140,7 @@
                   <button type="button" class="btn btn-primary">AI acts every Friday</button>
                 </div>
               </p>
-
+              <hr>
               <h4>Market</h4>
               <p>
                 <div class="btn-group" data-toggle="buttons-checkbox">
@@ -142,14 +152,85 @@
 
               <hr>
 
-              <h4>Overflowing text to show optional scrollbar</h4>
-              <p>We set a fixed <code>max-height</code> on the <code>.modal-body</code>. Watch it overflow with all this extra lorem ipsum text we've included.</p>
-              <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-              <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-              <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-              <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+              <h4>Portfolio</h4>
+
+              <h5 >Available Money: <span id="money"> $ 100,000.00</h5>
+                  <div class="progress">
+                    <div class="bar" style="width: 100%;"></div>
+                </div>
+                <br>
+                <!--
+                <input data-provide="typeahead" type="text" class="input-medium search-query">
+                <button id="find_stock" type="button" class="btn">Find Stock</button>
+                <span class="spacer"></span>
+                Price: <span id="price"> $ --.-- </span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                Total Ammount: <span id="ammount"> $ --.-- </span>
+                <br><br>-->
+                    <div class="control-group">
+                    <label class="control-label" for="stock_name">Stock: </label>
+                    <div class="controls">
+                      <input data-provide="typeahead" type="text" class="input-medium" id="stock_name">
+                      <button id="find_stock" type="button" class="btn">Find Stock</button>
+                    </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="price">Price: </label>
+                        <div class="controls">
+                            <span id="price" class="input-medium uneditable-input"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                    <label class="control-label" for="quantity">Quantity: </label>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input type="text" class="input-small" id="quantity">
+                            <span id="ammount" class="add-on">$ --,---.--</span>
+                        </div>
+                        
+                      <button type="button" class="btn">Buy</button>
+                    </div>
+                    </div>
+
+
+            <table id="portfolio_table" class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Market</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Ammount</th>
+                    <th>Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Ibovespa</td>
+                    <td>PETR4</td>
+                    <td>Petrobras ON</td>
+                    <td>R$ 31.14</td>
+                    <td>200</td>
+                    <td>R$ 622.80</td>
+                    <td><i class="icon-remove"></i></td>
+                  </tr>
+                  <tr>
+                    <td>Ibovespa</td>
+                    <td>PETR4</td>
+                    <td>Petrobras ON</td>
+                    <td>R$ 31.14</td>
+                    <td>200</td>
+                    <td>R$ 622.80</td>
+                    <td><i class="icon-remove"></i></td>
+                  </tr>                  
+                </tbody>
+              </table>
+
+
+              </div>
             </div>
             <div class="modal-footer">
               <a href="#" class="btn" data-dismiss="modal">Close</a>
@@ -168,7 +249,9 @@
     <script src="static/js/imghover.js"></script>
     <script type="text/javascript">
     $(function (){
-
+        $("#find_stock").click(function() {
+            $(this).button('loading');
+        });
         $(".item").on("click", function() {
             if($(".item").index(this) == 0)
             {
