@@ -8,6 +8,7 @@ from markets import MARKETS
 import markets.util
 import markets.models
 import game.gameflow
+import game.util
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -57,7 +58,20 @@ def run_markets():
 @route('/api/stockname')
 def api_stockname():
     names = markets.models.StockName.all().filter('market_ref IN', map(int, request.query.markets.split('-'))).fetch(5000)
-    return json.dumps([' - '.join([s.code, s.name]) for s in names])
+    return json.dumps([' - '.join([MARKETS[s.market_ref][0] + ':' + s.code, s.name]) for s in names])
+
+
+@route('/api/stockprice')
+def api_stockprice():
+    market_name, code = request.query.query.split(':')
+    market_ref = [m[0] for m in MARKETS].index(market_name)
+    if market_ref == 0:
+        correc = game.util.get_exchange()
+    else:
+        correc = 1.0
+    stock_name = markets.util.get_stock_name(market_ref, code)
+
+    return json.dumps(round(markets.util.get_stock(stock_name).value / correc, 2))
 
 
 @route('/clear_database')

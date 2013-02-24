@@ -24,7 +24,7 @@ def get_market(ref, date=last_date(), keys_only=False):
 
 def get_stock(stock_name, date=last_date()):
     market = get_market(stock_name.market_ref, date, keys_only=True)
-    return Stock.all().filter("date =", date).filter("market =", market).filter('name = ', stock_name.key()).get()
+    return Stock.all().filter("market =", market).filter('name = ', stock_name.key()).get()
 
 
 def get_stock_name(ref, stock_code, keys_only=False):

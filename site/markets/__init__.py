@@ -5,7 +5,7 @@ import nasdaq
 import dowjones
 
 MARKETS = (
-    ('BMFBovespa', brazil),
-    ('Nasdaq', nasdaq),
-    ('Dow Jones', dowjones),
+    ('Ibovespa', brazil),
+    ('Nasdaq-100', nasdaq),
+    ('Dow Jones Composite', dowjones),
     )

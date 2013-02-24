@@ -145,7 +145,7 @@
                 </div>
               </p>
               <hr>
-              <h4>Market</h4>
+              <h4>Markets</h4>
               <p>
                 <div class="btn-group" data-toggle="buttons-checkbox">
                   <button type="button" class="market_checks active btn btn-primary">Ibovespa</button>
@@ -176,22 +176,25 @@
                     <div class="control-group">
                     <label class="control-label" for="stock_name">Stock: </label>
                     <div class="controls">
-                      <input autocomplete="off" type="text" class="input-medium" id="stock_name">
+                      <input autocomplete="off" type="text" class="input-large" id="stock_name">
                       <button id="find_stock" type="button" class="btn">Find Stock</button>
                     </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="price">Price: </label>
                         <div class="controls">
-                            <span id="price" class="input-medium uneditable-input"></span>
+                            <div class="input-prepend">
+                            <span class="add-on">$</span>
+                            <input type="text" class="disabled text-right input-small" id="price">
+                            </div>
                         </div>
                     </div>
                     <div class="control-group">
                     <label class="control-label" for="quantity">Quantity: </label>
                     <div class="controls">
                         <div class="input-append">
-                            <input type="text" class="input-small" id="quantity">
-                            <span id="ammount" class="add-on">$ --,---.--</span>
+                            <input type="text" class="text-right input-small" id="quantity">
+                            <span id="ammount" class="text-right add-on">$ --,---.--</span>
                         </div>
                         
                       <button type="button" class="btn">Buy</button>
@@ -252,7 +255,14 @@
     <script src="static/js/bootstrap.js"></script>
     <script src="static/js/imghover.js"></script>
     <script type="text/javascript">
-
+    function numberWithCommas(x) {
+        x = Math.round(x*100)/100 
+        x = x.toString();
+        var pattern = /(-?\d+)(\d{3})/;
+        while (pattern.test(x))
+            x = x.replace(pattern, "$1,$2");
+        return x;
+    }
     function get_active_markets() {
         result = []
         $('.market_checks.active').each(function() {
@@ -262,7 +272,9 @@
     }
 
     $(function (){
-
+        $('#quantity').bind("keyup change", function(){
+            $('#ammount').html('$'+numberWithCommas(parseFloat($(this).val())*parseFloat($('#price').val())));
+        });
         $('#stock_name').typeahead({
             source: function (query, process) {
                 return $.getJSON(
@@ -281,6 +293,10 @@
 
         $("#find_stock").click(function() {
             $(this).button('loading');
+            $.getJSON('api/stockprice', { query: $("#stock_name").val() }, function(data) {
+                $("#price").val(data);
+                $("#find_stock").button('reset');
+            }).error(function() { $("#find_stock").button('reset'); });
         });
         $(".item").on("click", function() {
             if($(".item").index(this) == 0)
