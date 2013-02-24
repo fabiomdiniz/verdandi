@@ -87,7 +87,11 @@
 
     .icon-remove {
        cursor:pointer;
-        
+
+    }
+
+    .typeahead.dropdown-menu {
+        top: 821px !important; /*Workaround for the typehead, I have no idea how to solve this*/
     }
 
     </style>
@@ -144,9 +148,9 @@
               <h4>Market</h4>
               <p>
                 <div class="btn-group" data-toggle="buttons-checkbox">
-                  <button type="button" class="btn btn-primary">Ibovespa</button>
-                  <button type="button" class="btn btn-primary">Nasdaq-100</button>
-                  <button type="button" class="btn btn-primary">Dow Jones Composite</button>
+                  <button type="button" class="market_checks active btn btn-primary">Ibovespa</button>
+                  <button type="button" class="market_checks btn btn-primary">Nasdaq-100</button>
+                  <button type="button" class="market_checks btn btn-primary">Dow Jones Composite</button>
                 </div>
               </p>
 
@@ -172,7 +176,7 @@
                     <div class="control-group">
                     <label class="control-label" for="stock_name">Stock: </label>
                     <div class="controls">
-                      <input data-provide="typeahead" type="text" class="input-medium" id="stock_name">
+                      <input autocomplete="off" type="text" class="input-medium" id="stock_name">
                       <button id="find_stock" type="button" class="btn">Find Stock</button>
                     </div>
                     </div>
@@ -203,7 +207,7 @@
                     <th>Name</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th>Ammount</th>
+                    <th>Total</th>
                     <th>Remove</th>
                   </tr>
                 </thead>
@@ -248,7 +252,33 @@
     <script src="static/js/bootstrap.js"></script>
     <script src="static/js/imghover.js"></script>
     <script type="text/javascript">
+
+    function get_active_markets() {
+        result = []
+        $('.market_checks.active').each(function() {
+            result.push($(this).prevAll().length);
+        })
+        return result.join('-');
+    }
+
     $(function (){
+
+        $('#stock_name').typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    'api/stockname',
+                    { query: query,
+                      markets: get_active_markets() },
+                    function (data) {
+                        return process(data);
+                    });
+            },
+            updater: function(item) {
+                return item.split(" - ")[0];
+            } 
+
+        });
+
         $("#find_stock").click(function() {
             $(this).button('loading');
         });

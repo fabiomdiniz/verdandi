@@ -1,10 +1,12 @@
  # -*- coding: utf-8 -*-
 
-from bottle import route, run, view, static_file
+from bottle import route, run, view, static_file, request
 import os.path
+import json
 
 from markets import MARKETS
 import markets.util
+import markets.models
 import game.gameflow
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
@@ -50,6 +52,23 @@ def run_markets():
     result += ['----MATCHES----']
     result += game.gameflow.update_matches()
     return '<br>'.join(result)
+
+
+@route('/api/stockname')
+def api_stockname():
+    names = markets.models.StockName.all().filter('market_ref IN', map(int, request.query.markets.split('-'))).fetch(5000)
+    return json.dumps([' - '.join([s.code, s.name]) for s in names])
+
+
+@route('/clear_database')
+def clear_database():
+    from google.appengine.api import users
+
+    if users.is_current_user_admin():
+        markets.util.clear_db()
+        return 'OK'
+    else:
+        return 'NOPE'
 
 
 @route('/static/<filename:path>')
