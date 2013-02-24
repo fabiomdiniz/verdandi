@@ -16,9 +16,15 @@ def index():
     return dict()
 
 
-@route('/2')
-@view('index_2')
-def index_2():
+@route('/reference')
+@view('reference')
+def reference():
+    return dict()
+
+
+@route('/battle')
+@view('battle')
+def battle():
     return dict()
 
 

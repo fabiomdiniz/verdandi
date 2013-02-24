@@ -10,8 +10,6 @@
 
     <!-- Le styles -->
     <link href="static/css/bootstrap.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Old+Standard+TT' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Lato:700' rel='stylesheet' type='text/css'>
     <style type="text/css">
     body { 
         background: url(static/img/back.png) no-repeat center center fixed; 
@@ -22,73 +20,67 @@
 
     }
     h1 {
-        font-family: 'Lato', serif;
         color: black;
-    }
-    /* Custom container */
-    .container {
-        max-width: 1000px;
-    }
-    .container > hr {
-    
-    }
-
-    /* Main marketing message and sign up button */
-    .jumbotron {
-        margin: 80px 0;
-        text-align: left;
-    }
-    .title h1 {
         font-size: 100px;
         line-height: 1;
         padding-left: 10px;
     }
-    .jumbotron .lead {
-        font-size: 24px;
-        line-height: 1.25;
+    .container {
+        width:270px;
+        height:150px;
+        position:absolute;
+        left:50%;
+        top:50%;
+        margin:-75px 0 0 -135px;
+    }
+    .jumbotron {
+        margin: 80px 0;
+        text-align: center;
     }
     .jumbotron .btn {
         font-size: 21px;
         padding: 14px 24px;
     }
 
-    /* Supporting marketing content */
-    .marketing {
-        margin: 60px 0;
-    }
-    .marketing p + h4 {
-        margin-top: 28px;
+    .modal {
+        width: 700px;
     }
 
+    .modal-body {
+        max-height: 700px;
+    }
 
-    /* Customize the navbar links to be fill the entire space of the .navbar */
-    .navbar .navbar-inner {
-    
+    .img_wrapper { 
+       position: relative; 
+       width: 100%; /* for IE 6 */
+       cursor:pointer;
     }
-    .navbar .nav {
-        margin: 0;
-        display: table;
-        width: 100%;
+
+    .hover_text { 
+       position: absolute; 
+       left: 0; 
+       width: 100%; 
     }
-    .navbar .nav li {
-        display: table-cell;
-        width: 1%;
-        float: none;
+
+    .hover_text span { 
+       color: white; 
+       font: bold 24px/45px; 
+       letter-spacing: -1px;  
+       background: rgb(0, 0, 0); /* fallback color */
+       background: rgba(0, 0, 0, 0.7);
+       padding-left: 10%; 
+       position: absolute; 
+       width: 90%; 
     }
-    .navbar .nav li a {
-        font-weight: bold;
-        text-align: center;
-        border-left: 1px solid rgba(255,255,255,.75);
-        border-right: 1px solid rgba(0,0,0,.1);
+
+    .hover_text span.spacer {
+       padding:0 5px;
     }
-    .navbar .nav li:first-child a {
-        border-left: 0;
-        border-radius: 3px 0 0 3px;
+
+    #norn_desc {
+        opacity: 0;
     }
-    .navbar .nav li:last-child a {
-        border-right: 0;
-        border-radius: 0 3px 3px 0;
-    }
+
     </style>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -101,34 +93,71 @@
 
   <body>
     <div class="title">
-        <h1>Verdandi</h1>
+        <h1>Verðandi</h1>
       </div>
+    <div class="container">
 
-      <!-- Example row of columns 
-      <div class="row-fluid">
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-       </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
+      <div class="jumbotron">
+        <a data-toggle="modal"  id="start_btn" class="btn btn-large btn-info" href="#start">Start Battle</a>
       </div>
+</div>
+      <div id="start" class="modal hide fade" style="display: none; ">
+            <div class="modal-header">
+              <button class="close" data-dismiss="modal">×</button>
+              <h3>Here Comes a New Challenger!</h3>
+            </div>
+            <div class="modal-body">
+              <h4>Choose an Opponent</h4>
+              <p>
+                <span class="item">
+                    <img class="verdandi" src="static/img/verdandi.png"/>
+                </span>
+                <span class="item">
+                    <img class="urdr" src="static/img/urdr.png"/>
+                </span>
+                <span class="item">
+                    <img class="skuld" src="static/img/skuld.png"/>
+                </span>
+              </p>
+              <p id="norn_desc">
+                Norn of the present, easy AI
+              </p>
 
-      <hr>
+              <h4>Difficulty</h4>
+              <p>
+                <div class="btn-group" data-toggle="buttons-radio">
+                  <button type="button" class="active btn btn-primary">AI acts every day</button>
+                  <button type="button" class="btn btn-primary">AI acts every Friday</button>
+                </div>
+              </p>
 
-      <div class="footer">
-        <p>&copy; Company 2013</p>
-      </div>
-      -->
+              <h4>Market</h4>
+              <p>
+                <div class="btn-group" data-toggle="buttons-checkbox">
+                  <button type="button" class="btn btn-primary">Ibovespa</button>
+                  <button type="button" class="btn btn-primary">Nasdaq-100</button>
+                  <button type="button" class="btn btn-primary">Dow Jones Composite</button>
+                </div>
+              </p>
+
+              <hr>
+
+              <h4>Overflowing text to show optional scrollbar</h4>
+              <p>We set a fixed <code>max-height</code> on the <code>.modal-body</code>. Watch it overflow with all this extra lorem ipsum text we've included.</p>
+              <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+              <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+              <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+              <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn" data-dismiss="modal">Close</a>
+              <a href="#" class="btn btn-primary">Save changes</a>
+            </div>
+          </div>
+
+
     </div> <!-- /container -->
 
     <!-- Le javascript
@@ -136,10 +165,15 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="static/js/jquery.js"></script>
     <script src="static/js/bootstrap.js"></script>
+    <script src="static/js/imghover.js"></script>
     <script type="text/javascript">
     $(function (){
-        $("#demo_link").click(function() {
-            $('#demo').modal('show');
+
+        $(".item").on("click", function() {
+            if($(".item").index(this) == 0)
+            {
+                $("img.verdandi").toggleClass('inactive');
+            }
         });
     })
     </script>
