@@ -332,6 +332,7 @@
                 current_price = parseFloat(data);
                 $("#find_stock").button('reset');
                 $("#quantity").val(0);
+                $("#quantity").change();
             }).error(function() { $("#find_stock").button('reset'); });
         });
         $(".item").on("click", function() {
