@@ -1,6 +1,6 @@
  # -*- coding: utf-8 -*-
 from google.appengine.ext import db
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from models import Stock, Market, StockName
 
 
@@ -14,8 +14,14 @@ def get_float(string):
     return float(string.replace(',', '.'))
 
 
-def last_date():
+def today_date():
     return datetime.combine(datetime.today().date(), time())
+
+
+def last_date():
+    day_delta = 0  # TODO
+    hours_delta = 0  # TODO
+    return datetime.combine((datetime.today() - timedelta(days=day_delta, hours=hours_delta)).date(), time())
 
 
 def get_market(ref, date=last_date(), keys_only=False):

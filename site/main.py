@@ -70,7 +70,8 @@ def api_stockprice():
     else:
         correc = 1.0
     stock_name = markets.util.get_stock_name(market_ref, code)
-
+    import logging
+    #logging.info(stock_name)
     return json.dumps(round(markets.util.get_stock(stock_name).value / correc, 2))
 
 

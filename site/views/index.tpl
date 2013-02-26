@@ -158,9 +158,9 @@
 
               <h4>Portfolio</h4>
 
-              <h5 >Available Money: <span id="money"> $ 100,000.00</h5>
+              <h5 >Available Money: $<span id="money"> 10,000.00</h5>
                   <div class="progress">
-                    <div class="bar" style="width: 100%;"></div>
+                    <div id="progressbar" class="bar" style="width: 100%;"></div>
                 </div>
                 <br>
                 <!--
@@ -185,7 +185,7 @@
                         <div class="controls">
                             <div class="input-prepend">
                             <span class="add-on">$</span>
-                            <input type="text" class="disabled text-right input-small" id="price">
+                            <input type="text" disabled class="text-right input-small" id="price">
                             </div>
                         </div>
                     </div>
@@ -197,7 +197,7 @@
                             <span id="ammount" class="text-right add-on">$ --,---.--</span>
                         </div>
                         
-                      <button type="button" class="btn">Buy</button>
+                      <button id="buy" type="button" class="btn">Buy</button>
                     </div>
                     </div>
 
@@ -215,24 +215,6 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Ibovespa</td>
-                    <td>PETR4</td>
-                    <td>Petrobras ON</td>
-                    <td>R$ 31.14</td>
-                    <td>200</td>
-                    <td>R$ 622.80</td>
-                    <td><i class="icon-remove"></i></td>
-                  </tr>
-                  <tr>
-                    <td>Ibovespa</td>
-                    <td>PETR4</td>
-                    <td>Petrobras ON</td>
-                    <td>R$ 31.14</td>
-                    <td>200</td>
-                    <td>R$ 622.80</td>
-                    <td><i class="icon-remove"></i></td>
-                  </tr>                  
                 </tbody>
               </table>
 
@@ -255,7 +237,42 @@
     <script src="static/js/bootstrap.js"></script>
     <script src="static/js/imghover.js"></script>
     <script type="text/javascript">
+    var original_money = 10000;
+    var available_money = 10000;
+    var current_market;
+    var current_code;
+    var current_name;
+    var current_price;
+    var current_quantity;
+    var current_total;
+
+    function update_total(value) {
+      available_money = available_money + value;
+      $("#progressbar").css('width', (100*available_money/original_money).toFixed(0)+'%');
+      $("#money").html(numberWithCommas(available_money));
+    }
+
+    function add_row() {
+      $('#portfolio_table').append('<tr>' +
+                                   '<td>' + current_market + '</td>' +
+                                   '<td>' + current_code + '</td>' +
+                                   '<td>' + current_name + '</td>' +
+                                   '<td>' + current_price + '</td>' +
+                                   '<td>' + current_quantity + '</td>' +
+                                   '<td>' + numberWithCommas(current_total) + '</td>' +
+                                   '<td><i class="icon-remove"></i></td>' +
+                                   '</tr>');
+      update_total(-1*current_total);
+    }
+
+    function Integer(v){
+        return v.replace(/\D/g,"")
+    }
+
     function numberWithCommas(x) {
+        if(isNaN(x)) {
+          return '--.--';
+        }
         x = Math.round(x*100)/100 
         x = x.toString();
         var pattern = /(-?\d+)(\d{3})/;
@@ -272,9 +289,22 @@
     }
 
     $(function (){
+        $('#buy').click(add_row);
+
+        $('#portfolio_table tbody').on('click', '.icon-remove', function() {
+          price = $(this).parent().parent().find('td:eq(3)').html();
+          quantity = $(this).parent().parent().find('td:eq(4)').html();
+          update_total(parseFloat(price)*parseFloat(quantity));
+          $(this).parent().parent().remove();
+        })
+
         $('#quantity').bind("keyup change", function(){
-            $('#ammount').html('$'+numberWithCommas(parseFloat($(this).val())*parseFloat($('#price').val())));
+            total_value = parseFloat($(this).val())*parseFloat($('#price').val());
+            $('#ammount').html('$'+numberWithCommas(total_value));
+            current_total = total_value
+            current_quantity = $(this).val();
         });
+
         $('#stock_name').typeahead({
             source: function (query, process) {
                 return $.getJSON(
@@ -286,7 +316,11 @@
                     });
             },
             updater: function(item) {
-                return item.split(" - ")[0];
+                market_code = item.split(" - ")[0];
+                current_name = item.split(" - ")[1];
+                current_market = market_code.split(":")[0];
+                current_code = market_code.split(":")[1];
+                return market_code;
             } 
 
         });
@@ -295,7 +329,9 @@
             $(this).button('loading');
             $.getJSON('api/stockprice', { query: $("#stock_name").val() }, function(data) {
                 $("#price").val(data);
+                current_price = parseFloat(data);
                 $("#find_stock").button('reset');
+                $("#quantity").val(0);
             }).error(function() { $("#find_stock").button('reset'); });
         });
         $(".item").on("click", function() {
