@@ -6,12 +6,20 @@ from bs4 import BeautifulSoup
 
 from models import Stock, Market
 import util
+import json
+import datetime
+
+
+def get_datetime():
+    url = 'http://www.worldweatheronline.com/feed/tz.ashx?key=a730d81bdf185251132302&q=New+York&format=json'
+    time_str = json.loads(urlfetch.fetch(url, deadline=30).content)['data']['time_zone'][0]['localtime']
+    return datetime.datetime.strptime(time_str, '%Y-%m-%d %H:%M')
 
 
 def get_market():
-    util.clean_market(1)
+    #util.clean_market(1)
 
-    market = Market(ref=1)
+    market = Market(ref=1, datetime=get_datetime())
     market.put()
 
     url = 'http://www.barchart.com/stocks/nasdaq100.php?view=main'
@@ -23,7 +31,8 @@ def get_market():
         code = str(tds[0].text)
         name = str(tds[1].text)
         value = float(tds[2].text.replace(',', ''))
-        diff = float(tds[4].text.replace(',', '').replace('%', ''))
+        text_replace = tds[4].text.replace(',', '').replace('%', '')
+        diff = float(text_replace) if text_replace != 'unch' else 0.0
         stock = Stock(name=util.get_or_create_name(1, code, name),
                       value=value, diff=diff, market=market.key())
         stock.put()

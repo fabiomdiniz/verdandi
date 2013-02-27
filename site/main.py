@@ -3,6 +3,7 @@
 from bottle import route, run, view, static_file, request
 import os.path
 import json
+import datetime
 
 from markets import MARKETS
 import markets.util
@@ -55,6 +56,20 @@ def run_markets():
     return '<br>'.join(result)
 
 
+@route('/cron/fetch_market/<ref>')
+def fetch_market(ref):
+    if datetime.datetime.today().isoweekday() not in (6, 7):
+        ref = int(ref)
+        try:
+            MARKETS[ref][1].get_market()
+        except ValueError as e:
+            return ' - '.join([MARKETS[ref][0], repr(e)])
+        else:
+            return ' - '.join([MARKETS[ref][0], "OK"])
+    else:
+        return 'WEEKEND!'
+
+
 @route('/api/stockname')
 def api_stockname():
     names = markets.models.StockName.all().filter('market_ref IN', map(int, request.query.markets.split('-'))).fetch(5000)
@@ -70,9 +85,9 @@ def api_stockprice():
     else:
         correc = 1.0
     stock_name = markets.util.get_stock_name(market_ref, code)
-    import logging
-    #logging.info(stock_name)
-    return json.dumps(round(markets.util.get_stock(stock_name).value / correc, 2))
+    stock = markets.util.get_stock(stock_name)
+    return json.dumps({'value': round(stock.value / correc, 2),
+                       'time': stock.market.datetime.strftime('%H:%M')})
 
 
 @route('/clear_database')

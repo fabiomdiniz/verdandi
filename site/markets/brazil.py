@@ -3,16 +3,23 @@
 from bs4 import BeautifulSoup
 from models import Stock, Market
 import util
+import json
+import datetime
 from google.appengine.api import urlfetch
 
 
+def get_datetime():
+    url = 'http://www.worldweatheronline.com/feed/tz.ashx?key=a730d81bdf185251132302&q=Sao+Paulo&format=json'
+    time_str = json.loads(urlfetch.fetch(url, deadline=30).content)['data']['time_zone'][0]['localtime']
+    return datetime.datetime.strptime(time_str, '%Y-%m-%d %H:%M')
+
+
 def get_market():
-    util.clean_market(0)
+    #util.clean_market(0)
     url = 'http://pregao-online.bmfbovespa.com.br/Cotacoes.aspx'
     soup = BeautifulSoup(urlfetch.fetch(url, deadline=30).content, 'lxml')
 
-    market = Market()
-    market.ref = 0
+    market = Market(ref=0, datetime=get_datetime())
     market.put()
 
     table = soup('table', attrs={'id': 'ctl00_DefaultContent_GrdCarteiraIndice'})[0]

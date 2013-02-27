@@ -183,9 +183,10 @@
                     <div class="control-group">
                         <label class="control-label" for="price">Price: </label>
                         <div class="controls">
-                            <div class="input-prepend">
+                            <div class="input-prepend input-append">
                             <span class="add-on">$</span>
                             <input type="text" disabled class="text-right input-small" id="price">
+                            <span class="text-right add-on">@ <span id="stock_time">--:--</span></span>
                             </div>
                         </div>
                     </div>
@@ -288,14 +289,31 @@
         return result.join('-');
     }
 
+    function remove_row(row) {
+          price = row.find('td:eq(3)').html();
+          quantity = row.find('td:eq(4)').html();
+          update_total(parseFloat(price)*parseFloat(quantity));
+          row.remove();
+    }
+
     $(function (){
         $('#buy').click(add_row);
 
+        $('.market_checks').click(function() {
+          setTimeout(function() {
+          $('.market_checks:not(.active)').each(function (){
+              market_str = $(this).html();
+              $('#portfolio_table td:nth-child(1)').each(function (){
+                if($(this).html() == market_str) {
+                  remove_row($(this).parent());
+                }
+
+              });
+        }); }, 100);
+        })
+
         $('#portfolio_table tbody').on('click', '.icon-remove', function() {
-          price = $(this).parent().parent().find('td:eq(3)').html();
-          quantity = $(this).parent().parent().find('td:eq(4)').html();
-          update_total(parseFloat(price)*parseFloat(quantity));
-          $(this).parent().parent().remove();
+          remove_row($(this).parent().parent());
         })
 
         $('#quantity').bind("keyup change", function(){
@@ -328,8 +346,9 @@
         $("#find_stock").click(function() {
             $(this).button('loading');
             $.getJSON('api/stockprice', { query: $("#stock_name").val() }, function(data) {
-                $("#price").val(data);
-                current_price = parseFloat(data);
+                $("#price").val(data['value']);
+                $("#stock_time").html(data['time']);
+                current_price = parseFloat(data['value']);
                 $("#find_stock").button('reset');
                 $("#quantity").val(0);
                 $("#quantity").change();

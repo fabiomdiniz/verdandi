@@ -24,11 +24,14 @@ def last_date():
     return datetime.combine((datetime.today() - timedelta(days=day_delta, hours=hours_delta)).date(), time())
 
 
-def get_market(ref, date=last_date(), keys_only=False):
-    return Market.all(keys_only=keys_only).filter("date =", date).filter("ref =", ref).get()
+def get_market(ref, date=None, keys_only=False):
+    if date is None:
+        return Market.all(keys_only=keys_only).filter("ref =", ref).order('-datetime').get()
+    else:
+        return Market.all(keys_only=keys_only).filter("datetime =", date).filter("ref =", ref).get()
 
 
-def get_stock(stock_name, date=last_date()):
+def get_stock(stock_name, date=None):
     market = get_market(stock_name.market_ref, date, keys_only=True)
     return Stock.all().filter("market =", market).filter('name = ', stock_name.key()).get()
 
@@ -37,7 +40,7 @@ def get_stock_name(ref, stock_code, keys_only=False):
     return StockName.all(keys_only=keys_only).filter("market_ref = ", ref).filter("code =", stock_code).get()
 
 
-def clean_market(ref, date=last_date()):
+def clean_market(ref, date=None):
     market = get_market(ref, date, keys_only=True)
     if market:
         db.delete(Stock.all(keys_only=True).filter("market =", market).fetch(1000))

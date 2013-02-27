@@ -5,7 +5,7 @@ from google.appengine.ext import db
 
 class Market(db.Model):
     ref = db.IntegerProperty()
-    date = db.DateProperty(auto_now_add=True)
+    datetime = db.DateTimeProperty(auto_now_add=False)
 
 
 class StockName(db.Model):

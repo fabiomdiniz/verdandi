@@ -1,4 +1,15 @@
 cron:
-- description: Update BD
-  url: /cron/get_markets
-  schedule: every mon,tue,wed,thu,fri of month 23:00
+- description: Update Ibovespa
+  url: /cron/fetch_market/0
+  schedule: every 15 minutes from 10:15 to 17:45
+  timezone: America/Sao_Paulo
+
+- description: Update Nasdaq-100
+  url: /cron/fetch_market/1
+  schedule: every 15 minutes from 09:45 to 16:15
+  timezone: US/Eastern
+
+- description: Update Dow Jones Composite
+  url: /cron/fetch_market/2
+  schedule: every 15 minutes from 09:45 to 16:15
+  timezone: US/Eastern
