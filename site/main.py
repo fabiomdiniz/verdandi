@@ -86,8 +86,11 @@ def api_stockprice():
         correc = 1.0
     stock_name = markets.util.get_stock_name(market_ref, code)
     stock = markets.util.get_stock(stock_name)
+    import logging
+    logging.info(stock)
     return json.dumps({'value': round(stock.value / correc, 2),
-                       'time': stock.market.datetime.strftime('%H:%M')})
+                       'time': stock.market.datetime.strftime('%H:%M'),
+                       'key': str(stock.key())})
 
 
 @route('/clear_database')

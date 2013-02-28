@@ -246,6 +246,10 @@
     var current_price;
     var current_quantity;
     var current_total;
+    var current_key = '';
+
+    var stock_keys = []
+    var stock_quantities = []
 
     function update_total(value) {
       available_money = available_money + value;
@@ -254,16 +258,21 @@
     }
 
     function add_row() {
-      $('#portfolio_table').append('<tr>' +
-                                   '<td>' + current_market + '</td>' +
-                                   '<td>' + current_code + '</td>' +
-                                   '<td>' + current_name + '</td>' +
-                                   '<td>' + current_price + '</td>' +
-                                   '<td>' + current_quantity + '</td>' +
-                                   '<td>' + numberWithCommas(current_total) + '</td>' +
-                                   '<td><i class="icon-remove"></i></td>' +
-                                   '</tr>');
-      update_total(-1*current_total);
+      if(current_key != '' && parseFloat(current_quantity) > 0)
+      {
+        $('#portfolio_table').append('<tr>' +
+                                     '<td>' + current_market + '</td>' +
+                                     '<td>' + current_code + '</td>' +
+                                     '<td>' + current_name + '</td>' +
+                                     '<td>' + current_price + '</td>' +
+                                     '<td>' + current_quantity + '</td>' +
+                                     '<td>' + numberWithCommas(current_total) + '</td>' +
+                                     '<td><i class="icon-remove"></i></td>' +
+                                     '</tr>');
+        update_total(-1*current_total);
+        stock_keys.push(current_key);
+        stock_quantities.push(current_quantity);
+      }
     }
 
     function Integer(v){
@@ -294,6 +303,8 @@
           quantity = row.find('td:eq(4)').html();
           update_total(parseFloat(price)*parseFloat(quantity));
           row.remove();
+          stock_keys.splice($(this).prevAll().length, 1);
+          stock_quantities.splice($(this).prevAll().length, 1);
     }
 
     $(function (){
@@ -325,6 +336,7 @@
 
         $('#stock_name').typeahead({
             source: function (query, process) {
+                current_key = '';
                 return $.getJSON(
                     'api/stockname',
                     { query: query,
@@ -352,6 +364,7 @@
                 $("#find_stock").button('reset');
                 $("#quantity").val(0);
                 $("#quantity").change();
+                current_key = data['key'];
             }).error(function() { $("#find_stock").button('reset'); });
         });
         $(".item").on("click", function() {
