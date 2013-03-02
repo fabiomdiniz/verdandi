@@ -1,6 +1,6 @@
  # -*- coding: utf-8 -*-
 
-from bottle import route, run, view, static_file, request
+from bottle import route, run, view, static_file, request, get, post, redirect
 import os.path
 import json
 import datetime
@@ -10,14 +10,23 @@ import markets.util
 import markets.models
 import game.gameflow
 import game.util
+import game.models
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 
-@route('/')
+@get('/')
 @view('index')
 def index():
     return dict()
+
+
+@post('/')
+def index_post():
+    if game.util.valid_data(request.POST):
+        game.util.create_match(request.POST)
+        redirect("/battle")
+    return 'CODE ME'
 
 
 @route('/reference')
@@ -30,6 +39,16 @@ def reference():
 @view('battle')
 def battle():
     return dict()
+
+
+@route('/matches')
+def get_matches(ref):
+    matches = game.models.Match.all().fetch(500)
+    out = ''
+    for match in matches:
+        pass
+
+    return out
 
 
 @route('/market/<ref>')
@@ -72,7 +91,7 @@ def fetch_market(ref):
 
 @route('/api/stockname')
 def api_stockname():
-    names = markets.models.StockName.all().filter('market_ref IN', map(int, request.query.markets.split('-'))).fetch(5000)
+    names = markets.models.StockName.all().filter('market_ref IN', map(int, request.query.markets.split(';'))).fetch(5000)
     return json.dumps([' - '.join([MARKETS[s.market_ref][0] + ':' + s.code, s.name]) for s in names])
 
 
@@ -90,7 +109,8 @@ def api_stockprice():
     logging.info(stock)
     return json.dumps({'value': round(stock.value / correc, 2),
                        'time': stock.market.datetime.strftime('%H:%M'),
-                       'key': str(stock.key())})
+                       'key': str(stock_name.key()),
+                       'name': stock_name.name})
 
 
 @route('/clear_database')

@@ -115,6 +115,8 @@
       </div>
 </div>
       <div id="start" class="modal hide fade" style="display: none; ">
+        <form method="post">
+
             <div class="modal-header">
               <button class="close" data-dismiss="modal">×</button>
               <h3>Here Comes a New Challenger!</h3>
@@ -137,18 +139,23 @@
               </p>
 
               <div class="well form-horizontal">
+            <input type="text" name="stock_keys" class="hide" id="stock_keys">
+            <input type="text" name="stock_quantities" class="hide" id="stock_quantities">
+            <input type="text" name="ai" class="hide" id="ai">
+            <input type="text" name="difficulty" class="hide" id="difficulty">
+            <input type="text" name="markets" class="hide" id="markets">
               <h4>Difficulty</h4>
               <p>
                 <div class="btn-group" data-toggle="buttons-radio">
-                  <button type="button" class="active btn btn-primary">AI acts every day</button>
-                  <button type="button" class="btn btn-primary">AI acts every Friday</button>
+                  <button type="button" class="active btn btn-primary difficulty_toggle">AI acts every day</button>
+                  <button type="button" class="btn btn-primary difficulty_toggle">AI acts every Friday</button>
                 </div>
               </p>
               <hr>
               <h4>Markets</h4>
               <p>
                 <div class="btn-group" data-toggle="buttons-checkbox">
-                  <button type="button" class="market_checks active btn btn-primary">Ibovespa</button>
+                  <button type="button" class="market_checks btn btn-primary">Ibovespa</button>
                   <button type="button" class="market_checks btn btn-primary">Nasdaq-100</button>
                   <button type="button" class="market_checks btn btn-primary">Dow Jones Composite</button>
                 </div>
@@ -190,7 +197,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group" id="ammount_group">
                     <label class="control-label" for="quantity">Quantity: </label>
                     <div class="controls">
                         <div class="input-append">
@@ -224,8 +231,9 @@
             </div>
             <div class="modal-footer">
               <a href="#" class="btn" data-dismiss="modal">Close</a>
-              <a href="#" class="btn btn-primary">Save changes</a>
+              <button type="submit" class="btn btn-primary">Save changes</a>
             </div>
+          </form>
           </div>
 
 
@@ -251,6 +259,11 @@
     var stock_keys = []
     var stock_quantities = []
 
+    function update_forms() {
+      $("#stock_quantities").val(stock_quantities.join(';'));
+      $("#stock_keys").val(stock_keys.join(';'));
+    }
+
     function update_total(value) {
       available_money = available_money + value;
       $("#progressbar").css('width', (100*available_money/original_money).toFixed(0)+'%');
@@ -258,8 +271,14 @@
     }
 
     function add_row() {
-      if(current_key != '' && parseFloat(current_quantity) > 0)
+      if((available_money - current_total) < 0 || parseFloat(current_quantity) <= 0)
       {
+        $("#ammount_group").addClass("error");
+        return;
+      }
+      if(current_key != '')
+      {
+        $("#ammount_group").removeClass("error");
         $('#portfolio_table').append('<tr>' +
                                      '<td>' + current_market + '</td>' +
                                      '<td>' + current_code + '</td>' +
@@ -272,6 +291,7 @@
         update_total(-1*current_total);
         stock_keys.push(current_key);
         stock_quantities.push(current_quantity);
+        update_forms();
       }
     }
 
@@ -295,16 +315,17 @@
         $('.market_checks.active').each(function() {
             result.push($(this).prevAll().length);
         })
-        return result.join('-');
+        return result.join(';');
     }
 
     function remove_row(row) {
           price = row.find('td:eq(3)').html();
           quantity = row.find('td:eq(4)').html();
           update_total(parseFloat(price)*parseFloat(quantity));
+          stock_keys.splice(row.prevAll().length, 1);
+          stock_quantities.splice(row.prevAll().length, 1);
+          update_forms();
           row.remove();
-          stock_keys.splice($(this).prevAll().length, 1);
-          stock_quantities.splice($(this).prevAll().length, 1);
     }
 
     $(function (){
@@ -312,6 +333,8 @@
 
         $('.market_checks').click(function() {
           setTimeout(function() {
+          current_key = '';
+          $("#markets").val(get_active_markets());
           $('.market_checks:not(.active)').each(function (){
               market_str = $(this).html();
               $('#portfolio_table td:nth-child(1)').each(function (){
@@ -347,7 +370,7 @@
             },
             updater: function(item) {
                 market_code = item.split(" - ")[0];
-                current_name = item.split(" - ")[1];
+                //current_name = item.split(" - ")[1];
                 current_market = market_code.split(":")[0];
                 current_code = market_code.split(":")[1];
                 return market_code;
@@ -356,11 +379,17 @@
         });
 
         $("#find_stock").click(function() {
+            item = $('#stock_name').val()
+            market_code = item.split(" - ")[0];
+            //current_name = item.split(" - ")[1];
+            current_market = market_code.split(":")[0];
+            current_code = market_code.split(":")[1];
             $(this).button('loading');
             $.getJSON('api/stockprice', { query: $("#stock_name").val() }, function(data) {
                 $("#price").val(data['value']);
                 $("#stock_time").html(data['time']);
                 current_price = parseFloat(data['value']);
+                current_name = data['name'];
                 $("#find_stock").button('reset');
                 $("#quantity").val(0);
                 $("#quantity").change();
@@ -368,11 +397,19 @@
             }).error(function() { $("#find_stock").button('reset'); });
         });
         $(".item").on("click", function() {
-            if($(".item").index(this) == 0)
+            var idx = $(".item").index(this);
+            if(idx == 0)
             {
                 $("img.verdandi").toggleClass('inactive');
+                $("#ai").val(idx);
             }
         });
+
+        $(".difficulty_toggle").click(function() {
+          $("#difficulty").val($(this).prevAll().length);
+        })
+        $(".difficulty_toggle:eq(0)").click();
+        $('.market_checks:eq(0)').click();
     })
     </script>
   </body>

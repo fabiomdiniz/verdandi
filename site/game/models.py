@@ -20,12 +20,12 @@ class Match(db.Model):
 
     money_available = db.FloatProperty(default=100000)
 
-    mtm_today = db.FloatProperty(default=100000)
-    mtm_yesterday = db.FloatProperty(default=100000)
+    mtm_now = db.FloatProperty(default=100000)
+    mtm_before = db.FloatProperty(default=100000)
 
     easy_mode = db.BooleanProperty(default=False)
 
-    market_ref = db.IntegerProperty(default=-1)  # Default to all markets
+    market_refs = db.StringProperty()  # Default to all markets
 
     def calc_mtm(self):
         mtm = 0.0
@@ -39,12 +39,17 @@ class Match(db.Model):
         return mtm
 
     def refresh_mtm(self):
-        self.mtm_yesterday = self.mtm_today
-        self.mtm_today = self.calc_mtm()
+        self.mtm_before = self.mtm_now
+        self.mtm_now = self.calc_mtm()
 
-    def buy_sell_asset(self, ref, share_code, num_shares):
-        stock_name = markets.util.get_stock_name(ref, share_code)
+    def buy_sell_asset_keys(self, keys, lst_num_shares):
+        shares = db.Model.get(keys)
+        for share, num_shares in zip(shares, lst_num_shares):
+            self.buy_sell_asset(share, num_shares)
+
+    def buy_sell_asset(self, stock_name, num_shares):
         stock_name_key = stock_name.key()
+        ref = stock_name.market_ref
         asset_lst = Asset.all()
         asset_lst.filter('market_ref = ', ref)
         asset_lst.filter('name = ', stock_name_key).fetch(1)
