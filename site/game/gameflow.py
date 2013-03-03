@@ -1,11 +1,13 @@
  # -*- coding: utf-8 -*-
 
 from game.models import Match, PLAYERS
+from game.util import get_exchange
 from datetime import datetime
 
 import ai
 
 from collections import defaultdict
+
 
 def update_matches():
     results = []
@@ -24,7 +26,10 @@ def update_matches():
 
 
 def create_match(data):
-    ai = data['ai']
+    if not data['ai']:
+        ai = 1
+    else:
+        ai = int(data['ai']) + 1
     stock_keys = data['stock_keys'].split(';')
     stock_quantities = data['stock_quantities'].split(';')
     difficulty = data['difficulty']

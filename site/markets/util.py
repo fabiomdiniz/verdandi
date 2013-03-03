@@ -55,9 +55,3 @@ def get_or_create_name(ref, code, name):
         s = StockName(code=code, name=name, market_ref=ref)
         s.put()
         return s.key()
-
-
-def clear_db():
-    db.delete(Stock.all(keys_only=True).fetch(1000))
-    db.delete(Market.all(keys_only=True).fetch(1000))
-    db.delete(StockName.all(keys_only=True).fetch(1000))

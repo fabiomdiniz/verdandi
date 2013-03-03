@@ -1,7 +1,10 @@
  # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
 from models import Stock, Market
+import game.util
+
+from bs4 import BeautifulSoup
+
 import util
 import json
 import datetime
@@ -18,8 +21,8 @@ def get_market():
     #util.clean_market(0)
     url = 'http://pregao-online.bmfbovespa.com.br/Cotacoes.aspx'
     soup = BeautifulSoup(urlfetch.fetch(url, deadline=30).content, 'lxml')
-
-    market = Market(ref=0, datetime=get_datetime())
+    rate = game.util.get_exchange()
+    market = Market(ref=0, datetime=get_datetime(), exchange_rate=rate)
     market.put()
 
     table = soup('table', attrs={'id': 'ctl00_DefaultContent_GrdCarteiraIndice'})[0]

@@ -1,9 +1,9 @@
  # -*- coding: utf-8 -*-
 
 from bottle import route, run, view, static_file, request, get, post, redirect
+import bottle
 import os.path
 import json
-import datetime
 
 from markets import MARKETS
 import markets.util
@@ -23,8 +23,8 @@ def index():
 
 @post('/')
 def index_post():
-    if game.util.valid_data(request.POST):
-        game.util.create_match(request.POST)
+    if game.util.valid_match(request.POST):
+        game.gameflow.create_match(request.POST)
         redirect("/battle")
     return 'CODE ME'
 
@@ -42,12 +42,27 @@ def battle():
 
 
 @route('/matches')
-def get_matches(ref):
+def get_matches():
     matches = game.models.Match.all().fetch(500)
     out = ''
     for match in matches:
-        pass
-
+        out += '<br> User : '
+        out += str(match.user.nickname())
+        out += '<br> Player: '
+        out += game.models.PLAYERS[match.player]
+        out += '<br> Money: '
+        out += str(match.money_available)
+        out += '<br> MtM Before : '
+        out += str(match.mtm_before)
+        out += '<br> MtM : '
+        out += str(match.mtm_now)
+        out += '<br> Easy Mode : '
+        out += str(match.easy_mode)
+        out += '<br> Assets : '
+        for asset in match.assets:
+            out += '<br>'
+            out += asset.name.code + ' - ' + str(asset.shares)
+        out += '<br><br>'
     return out
 
 
@@ -77,7 +92,8 @@ def run_markets():
 
 @route('/cron/fetch_market/<ref>')
 def fetch_market(ref):
-    if datetime.datetime.today().isoweekday() not in (6, 7):
+    #if datetime.datetime.today().isoweekday() not in (6, 7):
+    if True:
         ref = int(ref)
         try:
             MARKETS[ref][1].get_market()
@@ -118,14 +134,33 @@ def clear_database():
     from google.appengine.api import users
 
     if users.is_current_user_admin():
-        markets.util.clear_db()
+        markets.models.clear_db()
+        game.models.clear_db()
         return 'OK'
     else:
         return 'NOPE'
+
+
+@route('/clear_game_database')
+def clear_game_database():
+    from google.appengine.api import users
+
+    if users.is_current_user_admin():
+        game.models.clear_db()
+        return 'OK'
+    else:
+        return 'NOPE'
+
+
+@route('/static/img/<filename:re:.*\.png>#')
+def send_image(filename):
+    return static_file(filename, root=os.path.join(SITE_ROOT, 'static', 'img'), mimetype='image/png')
 
 
 @route('/static/<filename:path>')
 def send_static(filename):
     return static_file(filename, root=os.path.join(SITE_ROOT, 'static'))
 
-run(server='gae')
+bottle.debug(True)
+
+run(server='gae', debug=True)
