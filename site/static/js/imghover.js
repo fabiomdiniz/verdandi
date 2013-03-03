@@ -14,7 +14,7 @@ $(window).load(function(){
             el.parent().css({"width":this.width,"height":this.height});
             el.dequeue();
         });
-        this.src = this.src.substring(0, this.src.indexOf('.')) + '_bw' + '.png'//grayscale(this.src);
+        this.src = this.src.substring(0, this.src.length - 4) + '_bw' + '.png'//grayscale(this.src);
     });
     
     $("img.verdandi:not(.img_grayscale)").after("<h2 style=\"top:120px; z-index: 998; opacity: 0;\" class=\"hover_text\">Verðandi</h2>");

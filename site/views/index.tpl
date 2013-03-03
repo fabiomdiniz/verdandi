@@ -168,6 +168,8 @@
               <h5 >Available Money: $<span id="money"> 10,000.00</h5>
                   <div class="progress">
                     <div id="progressbar" class="bar" style="width: 100%;"></div>
+                    <div id="buybar" class="bar bar-info" style="width: 0%;"></div>
+                    <!--<div id="usedbar" class="bar bar-success" style="width: 0%;"></div>-->
                 </div>
                 <br>
                 <!--
@@ -266,7 +268,9 @@
 
     function update_total(value) {
       available_money = available_money + value;
-      $("#progressbar").css('width', (100*available_money/original_money).toFixed(0)+'%');
+      //used_perc = (100*available_money/original_money).toFixed(0);
+      $("#progressbar").css('width', used_perc +'%');
+      //$("#usedbar").css('width', (100-used_perc) +'%');
       $("#money").html(numberWithCommas(available_money));
     }
 
@@ -291,6 +295,8 @@
         update_total(-1*current_total);
         stock_keys.push(current_key);
         stock_quantities.push(current_quantity);
+        $("#quantity").val(0);
+        $("#quantity").change();
         update_forms();
       }
     }
@@ -355,6 +361,13 @@
             $('#ammount').html('$'+numberWithCommas(total_value));
             current_total = total_value
             current_quantity = $(this).val();
+            if(total_value >= 0) {
+              total_value = Math.min(available_money, total_value);
+              used_perc = (100*(available_money-total_value)/original_money).toFixed(0);
+              buy_perc = (100*(total_value)/original_money).toFixed(0);
+              $("#progressbar").css('width', used_perc +'%');
+              $("#buybar").css('width', buy_perc +'%');
+            }
         });
 
         $('#stock_name').typeahead({
