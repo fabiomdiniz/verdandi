@@ -13,6 +13,7 @@
     <![endif]-->
 
     <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/battle.css" rel="stylesheet">
     <link href="static/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="static/css/font-awesome.min.css" rel="stylesheet">
     <link href="static/css/bootswatch.css" rel="stylesheet">
@@ -122,35 +123,23 @@
   <div class="row">
 
     <div class="span4">
-      <div class="well">
-        <h1>h1. Heading 1</h1>
-        <h2>h2. Heading 2</h2>
-        <h3>h3. Heading 3</h3>
-        <h4>h4. Heading 4</h4>
-        <h5>h5. Heading 5</h5>
-        <h6>h6. Heading 6</h6>
-      </div>
+      <h3>You</h3>
+      <p>Total Assets Now: {{ mtm_now }}</p>
+      <p>Total Assets Before: {{ mtm_before }}</p>
     </div>
 
-    <div class="span4">
-      <h3>Example body text</h3>
-      <p>Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-      <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui.</p>
+    <div class="span4 text-center">
+      <h3></h3>
+      <p class="versus">Versus</p>
+      <p></p>
     </div>
 
-    <div class="span4">
-      <h3>Example addresses</h3>
-      <address>
-        <strong>Twitter, Inc.</strong><br>
-        795 Folsom Ave, Suite 600<br>
-        San Francisco, CA 94107<br>
-        <abbr title="Phone">P:</abbr> (123) 456-7890
-      </address>
-      <address>
-        <strong>Full Name</strong><br>
-        <a href="mailto:#">first.last@gmail.com</a>
-      </address>
+    <div class="span4 text-right">
+      <h3>{{ ai_name }}</h3>
+      <p>Total Assets Now: {{ ai_mtm_now }}</p>
+      <p>Total Assets Before: {{ ai_mtm_before }}</p>
     </div>
+
 
   </div>
   

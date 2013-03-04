@@ -4,12 +4,11 @@ from google.appengine.ext import db
 
 from markets.models import StockName
 import markets.util
-import game.util
 
 PLAYERS = (
     'Human',
     'Verdandi'
-    )
+)
 
 
 class Match(db.Model):
@@ -61,7 +60,7 @@ class Match(db.Model):
                 asset_lst[0].delete()
         else:  # New asset!
             asset = Asset(match=self.key(), market_ref=ref,
-                 name=stock_name_key, shares=num_shares)
+                          name=stock_name_key, shares=num_shares)
             asset.put()
         stock = markets.util.get_stock(stock_name)
         import logging

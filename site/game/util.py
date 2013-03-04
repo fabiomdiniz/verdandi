@@ -1,12 +1,15 @@
  # -*- coding: utf-8 -*-
 
-from google.appengine.api import urlfetch
+from google.appengine.api.users import get_current_user
 
-
-def get_exchange():
-    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=USDBRL=X&f=sl1&e=.csv'
-    return float(urlfetch.fetch(url, deadline=30).content.split(',')[-1].rstrip())
+from game.models import Match
 
 
 def valid_match(data):
     return True
+
+
+def get_matches(user=None):
+    if user is None:
+        user = get_current_user()
+    return Match.all().filter('user =', user).order('player').fetch(10)

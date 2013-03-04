@@ -15,3 +15,8 @@ indexes:
   - name: ref
   - name: datetime
     direction: desc
+
+- kind: Match
+  properties:
+  - name: user
+  - name: player

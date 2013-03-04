@@ -167,8 +167,8 @@
 
               <h5 >Available Money: $<span id="money"> 10,000.00</h5>
                   <div class="progress">
-                    <div id="progressbar" class="bar" style="width: 100%;"></div>
-                    <div id="buybar" class="bar bar-info" style="width: 0%;"></div>
+                    <div id="progressbar" class="bar bar-info" style="width: 100%;"></div>
+                    <div id="buybar" class="bar" style="width: 0%;"></div>
                     <!--<div id="usedbar" class="bar bar-success" style="width: 0%;"></div>-->
                 </div>
                 <br>

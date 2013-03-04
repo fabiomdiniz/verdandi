@@ -1,7 +1,7 @@
  # -*- coding: utf-8 -*-
 
 
-def update_match(match):
+def update_match(match, coordinates):
     pass
 
 

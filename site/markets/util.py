@@ -1,13 +1,18 @@
  # -*- coding: utf-8 -*-
 from google.appengine.ext import db
+from google.appengine.api import urlfetch
 from datetime import datetime, time, timedelta
+
 from models import Stock, Market, StockName
 
 
+def get_exchange():
+    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=USDBRL=X&f=sl1&e=.csv'
+    return float(urlfetch.fetch(url, deadline=30).content.split(',')[-1].rstrip())
+
+
 def clean_string(string):
-    return ' '.join([b for b in string.replace('\r', '')
-                                 .replace('\n', '')
-                                 .split(' ') if b])
+    return ' '.join([b for b in string.replace('\r', '').replace('\n', '').split(' ') if b])
 
 
 def get_float(string):

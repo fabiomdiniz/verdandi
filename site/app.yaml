@@ -5,6 +5,7 @@ threadsafe: no
 api_version: 1
 
 handlers:
+
 - url: /favicon.ico
   static_files: static/img/favicon.ico
   upload: static/img/favicon.ico
@@ -20,6 +21,8 @@ handlers:
   script: main.py
   login: required
 
+builtins:
+- remote_api: on
 
 libraries:
 - name: lxml

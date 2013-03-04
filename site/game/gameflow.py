@@ -1,7 +1,7 @@
  # -*- coding: utf-8 -*-
 
 from game.models import Match, PLAYERS
-from game.util import get_exchange
+from markets.util import get_exchange
 from datetime import datetime
 
 import ai
@@ -51,3 +51,4 @@ def create_match(data):
     ai_match.buy_sell_asset_keys(keys, quantities)
     match.refresh_mtm()
     ai_match.refresh_mtm()
+
