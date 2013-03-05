@@ -39,7 +39,8 @@ def battle():
     matches = game.util.get_matches()
     return {'mtm_now': round(matches[0].mtm_now, 2), 'mtm_before': round(matches[0].mtm_before, 2),
             'ai_mtm_now': round(matches[1].mtm_now, 2), 'ai_mtm_before': round(matches[1].mtm_before, 2),
-            'ai_name': game.models.PLAYERS[matches[1].player]}
+            'ai_name': game.models.PLAYERS[matches[1].player],
+            'assets': matches[0].assets}
 
 
 @route('/clear_market_database')

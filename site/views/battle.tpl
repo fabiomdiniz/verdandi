@@ -167,6 +167,48 @@
   <div class="page-header">
     <h1>Next Strategy</h1>
   </div>
+    <ul class="nav nav-tabs">
+    <li><a href="#sell" data-toggle="tab">Sell</a></li>
+    <li><a href="#buy" data-toggle="tab">Buy</a></li>
+    <li><a href="#trends" data-toggle="tab">Trends</a></li>
+    <li><a href="#settings" data-toggle="tab">???</a></li>
+  </ul>
+  <div class="tab-content">
+  <div class="tab-pane active" id="sell">
+
+    <table id="sell_table" class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Market</th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        %for i, asset in enumerate(assets):
+        <tr>
+          <td>{{ i+1 }}</td>
+          <td>{{ asset.market_ref }}</td>
+          <td>{{ asset.name.code }}</td>
+          <td>{{ asset.name.name }}</td>
+          <td>{{ asset.shares }}</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+        %end
+      </tbody>
+    </table>
+
+  </div>
+  <div class="tab-pane" id="buy">2</div>
+  <div class="tab-pane" id="trends">3</div>
+  <div class="tab-pane" id="settings">4</div>
+</div>
+<!--
   <div class="navbar">
     <div class="navbar-inner">
       <div class="container" style="width: auto;">
@@ -210,10 +252,10 @@
               </ul>
             </li>
           </ul>
-        </div><!-- /.nav-collapse -->
+        </div>
       </div>
-    </div><!-- /navbar-inner -->
-  </div><!-- /navbar -->
+    </div>
+  </div>
 
   <div class="navbar navbar-inverse">
     <div class="navbar-inner">
@@ -258,11 +300,11 @@
               </ul>
             </li>
           </ul>
-        </div><!-- /.nav-collapse -->
+        </div>
       </div>
-    </div><!-- /navbar-inner -->
-  </div><!-- /navbar -->
-
+    </div>
+  </div>
+-->
 </section>
 
 
@@ -862,6 +904,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
     <script src="static/js/bootswatch.js"></script>
+    <script src="static/js/battle.js"></script>
 
 
   </body>

@@ -2,3 +2,7 @@
     line-height:2em;
     font-size: 40px;
 }
+
+#sell_table td, #sell_table th {
+   text-align: center;   
+}
