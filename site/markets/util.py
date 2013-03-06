@@ -1,7 +1,9 @@
  # -*- coding: utf-8 -*-
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
+
 from datetime import datetime, time, timedelta
+
 
 from models import Stock, Market, StockName
 
@@ -9,6 +11,20 @@ from models import Stock, Market, StockName
 def get_exchange():
     url = 'http://download.finance.yahoo.com/d/quotes.csv?s=USDBRL=X&f=sl1&e=.csv'
     return float(urlfetch.fetch(url, deadline=30).content.split(',')[-1].rstrip())
+
+
+def last_weekdays(num):
+    out = [prev_weekday(datetime.today())]
+    for i in range(1, num):
+        out.append(prev_weekday(out[i-1]))
+    return out
+
+
+def prev_weekday(adate):
+    adate -= timedelta(days=1)
+    while adate.weekday() > 4:  # Mon-Fri are 0-4
+        adate -= timedelta(days=1)
+    return adate
 
 
 def clean_string(string):
@@ -31,14 +47,37 @@ def last_date():
 
 def get_market(ref, date=None, keys_only=False):
     if date is None:
-        return Market.all(keys_only=keys_only).filter("ref =", ref).order('-datetime').get()
+        return Market.all(keys_only=keys_only).filter("ref =", ref).order('-date').order('-time').get()
     else:
-        return Market.all(keys_only=keys_only).filter("datetime =", date).filter("ref =", ref).get()
+        return Market.all(keys_only=keys_only).filter("date =", date.date()).filter("time =", date.time()).filter("ref =", ref).get()
 
 
 def get_stock(stock_name, date=None):
     market = get_market(stock_name.market_ref, date, keys_only=True)
     return Stock.all().filter("market =", market).filter('name = ', stock_name.key()).get()
+
+
+def get_stocks_days(stock_name, num_days=10):
+    days = last_weekdays(num_days)
+    out = []
+    for day in days:
+        market = Market.all(keys_only=False).filter("date =", day.date()).filter("ref =", stock_name.market_ref).order('-time').get()
+        if not market is None:
+            stock = Stock.all().filter("market =", market.key()).filter('name = ', stock_name.key()).get()
+            if not stock is None:
+                out.append((day, stock, market.exchange_rate))
+    return out
+
+
+def get_stocks_in_day(stock_name, day):
+    out = []
+    markets = Market.all(keys_only=False).filter("date =", day.date()).filter("ref =", stock_name.market_ref).order('-time').fetch(100)
+    for market in markets:
+        stock = Stock.all().filter("market =", market.key()).filter('name = ', stock_name.key()).get()
+        if not stock is None:
+            dt = datetime.combine(market.date, market.time)
+            out.append((dt, stock, market.exchange_rate))
+    return out
 
 
 def get_stock_name(ref, stock_code, keys_only=False):

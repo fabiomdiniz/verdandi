@@ -21,7 +21,8 @@ def get_market():
     url = 'http://pregao-online.bmfbovespa.com.br/Cotacoes.aspx'
     soup = BeautifulSoup(urlfetch.fetch(url, deadline=30).content, 'lxml')
     rate = util.get_exchange()
-    market = Market(ref=0, datetime=get_datetime(), exchange_rate=rate)
+    dt = get_datetime()
+    market = Market(ref=0, date=dt.date(), time=dt.time(), exchange_rate=rate)
     market.put()
 
     table = soup('table', attrs={'id': 'ctl00_DefaultContent_GrdCarteiraIndice'})[0]

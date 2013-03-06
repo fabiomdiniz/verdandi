@@ -12,6 +12,18 @@ indexes:
 
 - kind: Market
   properties:
+  - name: __key__
+    direction: desc
+
+- kind: Market
+  properties:
+  - name: date
+  - name: ref
+  - name: time
+    direction: desc
+
+- kind: Market
+  properties:
   - name: ref
   - name: datetime
     direction: desc
@@ -20,3 +32,13 @@ indexes:
   properties:
   - name: user
   - name: player
+
+- kind: Stock
+  properties:
+  - name: __key__
+    direction: desc
+
+- kind: StockName
+  properties:
+  - name: __key__
+    direction: desc

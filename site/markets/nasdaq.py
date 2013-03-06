@@ -18,8 +18,8 @@ def get_datetime():
 
 def get_market():
     #util.clean_market(1)
-
-    market = Market(ref=1, datetime=get_datetime())
+    dt = get_datetime()
+    market = Market(ref=1, date=dt.date(), time=dt.time())
     market.put()
 
     url = 'http://www.barchart.com/stocks/nasdaq100.php?view=main'

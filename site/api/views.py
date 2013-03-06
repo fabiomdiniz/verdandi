@@ -3,6 +3,8 @@
 from bottle import route, request
 
 import json
+import calendar
+import datetime
 
 from markets import MARKETS
 import markets.views
@@ -11,6 +13,10 @@ import markets.models
 import game.gameflow
 import game.util
 import game.models
+
+
+def get_stamp(date_obj):
+    return calendar.timegm(date_obj.timetuple())*100
 
 
 @route('/api/stockname')
@@ -29,12 +35,54 @@ def api_stockprice():
         correc = 1.0
     stock_name = markets.util.get_stock_name(market_ref, code)
     stock = markets.util.get_stock(stock_name)
-    import logging
-    logging.info(stock)
     return json.dumps({'value': round(stock.value / correc, 2),
                        'time': stock.market.datetime.strftime('%H:%M'),
                        'key': str(stock_name.key()),
                        'name': stock_name.name})
+
+
+@route('/api/stockhistory')
+def api_stockhistory():
+    market_name, code = request.query.query.split(':')
+    stamp = getattr(request.query, 'stamp', False)
+    if stamp:
+        stamp_func = get_stamp
+    else:
+        stamp_func = lambda x: x.strftime('%Y-%m-%d')
+    market_ref = [m[0] for m in MARKETS].index(market_name)
+    stock_name = markets.util.get_stock_name(market_ref, code)
+    stocks = markets.util.get_stocks_days(stock_name, 10)
+    values = [[stamp_func(e[0]), e[1].value/e[2]] for e in stocks]
+
+    return json.dumps({'label': code,
+                       'data': values})
+
+
+@route('/api/stockhistoryday')
+def api_stockhistoryday():
+    market_name, code = request.query.query.split(':')
+    stamp = getattr(request.query, 'stamp', False)
+    if stamp:
+        stamp_func = get_stamp
+    else:
+        stamp_func = lambda x: x.strftime('%H:%M')
+    date = getattr(request.query, 'date', None)
+    if date:
+        try:
+            dt = datetime.datetime.strptime(date, '%Y-%m-%d')
+        except:
+            return "Invalid date format"
+    else:
+        dt = datetime.datetime.today()
+
+    market_ref = [m[0] for m in MARKETS].index(market_name)
+    stock_name = markets.util.get_stock_name(market_ref, code)
+    stocks = markets.util.get_stocks_in_day(stock_name, dt)
+
+    values = [[stamp_func(e[0]), e[1].value/e[2]] for e in stocks]
+
+    return json.dumps({'label': code,
+                       'data': values})
 
 
 @route('/api/market/<ref>')

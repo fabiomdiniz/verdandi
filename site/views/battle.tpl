@@ -168,15 +168,15 @@
     <h1>Next Strategy</h1>
   </div>
     <ul class="nav nav-tabs">
-    <li><a href="#sell" data-toggle="tab">Sell</a></li>
-    <li><a href="#buy" data-toggle="tab">Buy</a></li>
+    <li><a href="#portfolio" data-toggle="tab">Portfolio</a></li>
+    <li><a href="#sellbuy" data-toggle="tab">Buy/Sell</a></li>
     <li><a href="#trends" data-toggle="tab">Trends</a></li>
     <li><a href="#settings" data-toggle="tab">???</a></li>
   </ul>
   <div class="tab-content">
-  <div class="tab-pane active" id="sell">
+  <div class="tab-pane active" id="portfolio">
 
-    <table id="sell_table" class="table table-bordered table-striped table-hover">
+    <table id="portfolio_table" class="table table-bordered table-striped table-hover">
       <thead>
         <tr>
           <th>#</th>
@@ -204,7 +204,7 @@
     </table>
 
   </div>
-  <div class="tab-pane" id="buy">2</div>
+  <div class="tab-pane" id="sellbuy">2</div>
   <div class="tab-pane" id="trends">3</div>
   <div class="tab-pane" id="settings">4</div>
 </div>

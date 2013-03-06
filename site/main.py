@@ -5,6 +5,7 @@ import os.path
 
 import api.views
 import markets.views
+import markets.models
 import game.views
 import game.gameflow
 import game.util
@@ -33,6 +34,25 @@ def reference():
     return dict()
 
 
+#@route('/convert')
+#def convert():
+#    for market in markets.models.Market.all().fetch(1000):
+#        market.put()
+#        #if market.ref is None:
+#        #    market.ref = 0
+#        #if market.exchange_rate is None:
+#        #    if market.ref == 0:
+#        #        market.exchange_rate = 1.9
+#        #    else:
+#        #        market.exchange_rate = 1.0
+#        #if market.date is None:
+#        #    market.date = market.datetime.date()
+#        #if market.time is None:
+#        #    market.time = market.datetime.time()
+#        #market.put()
+#    return 'OK'
+
+
 @route('/battle')
 @view('battle')
 def battle():
@@ -48,7 +68,7 @@ def clear_database():
     from google.appengine.api import users
 
     if users.is_current_user_admin():
-        game.models.clear_db()
+        markets.models.clear_db()
         return 'OK'
     else:
         return 'NOPE'
