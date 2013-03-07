@@ -9,6 +9,8 @@ import util
 import json
 import datetime
 
+from dateutil import tz
+
 
 def get_datetime():
     url = 'http://www.worldweatheronline.com/feed/tz.ashx?key=a730d81bdf185251132302&q=New+York&format=json'
@@ -18,7 +20,8 @@ def get_datetime():
 
 def get_market():
     #util.clean_market(1)
-    dt = get_datetime()
+    #dt = get_datetime()
+    dt = datetime.datetime.now(tz.tzstr('EST5EDT'))
     market = Market(ref=1, date=dt.date(), time=dt.time())
     market.put()
 

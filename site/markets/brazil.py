@@ -9,6 +9,8 @@ import json
 import datetime
 from google.appengine.api import urlfetch
 
+from dateutil import tz
+
 
 def get_datetime():
     url = 'http://www.worldweatheronline.com/feed/tz.ashx?key=a730d81bdf185251132302&q=Sao+Paulo&format=json'
@@ -19,9 +21,11 @@ def get_datetime():
 def get_market():
     #util.clean_market(0)
     url = 'http://pregao-online.bmfbovespa.com.br/Cotacoes.aspx'
-    soup = BeautifulSoup(urlfetch.fetch(url, deadline=30).content, 'lxml')
+    soup = BeautifulSoup(urlfetch.fetch(url, deadline=50).content, 'lxml')
     rate = util.get_exchange()
-    dt = get_datetime()
+    #dt = get_datetime()
+    dt = datetime.datetime.now(tz.tzstr('EBST3EBDT'))
+
     market = Market(ref=0, date=dt.date(), time=dt.time(), exchange_rate=rate)
     market.put()
 
