@@ -15,14 +15,21 @@ var options = {
         }
     };
 
+function update_owned() {
+    $.getJSON('/api/num_shares?match=' + match_key + '&query=' + $("#stock_name").val() + ';', function(data) {
+        $("#quantity_owned").val(data);
+    });
+}
+
 function generic_buy_sell(button_id, val) {
     $(button_id).button('loading');
     var jqxhr = $.getJSON('/api/buy_sell?match=' + match_key + '&stock_name=' + current_key + '&num_shares=' +  val + ';', function() {
-        update_total(-1*val);
+        update_total(-1*val*parseFloat($('#price').val()));
         $("#quantity").val(0);
         $("#quantity").change();
         $("#quantity_s").val(0);
         $("#quantity_s").change();
+        update_owned();
         $(button_id).button('reset');
     }).error(function(e) {
      alert(e);
@@ -45,10 +52,8 @@ function generic_fetch(button_id, url) {
         success: onDataReceived,
         error: function() { $(button_id).button('reset'); }
     });
+    update_owned();
 
-    $.getJSON('/api/num_shares?match=' + match_key + '&query=' + $("#stock_name").val() + ';', function(data) {
-        $("#quantity_owned").val(data);
-    });
         
 }
 
