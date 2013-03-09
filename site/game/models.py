@@ -34,7 +34,7 @@ class Match(db.Model):
             if asset.market_ref == 0:  # If it is Brazil I need to convert to dollars
                 mtm_asset /= stock.market.exchange_rate
             mtm += mtm_asset
-        return mtm
+        return mtm + self.money_available
 
     def refresh_mtm(self):
         self.mtm_before = self.mtm_now
@@ -59,12 +59,10 @@ class Match(db.Model):
             else:  # Asset vanished!
                 asset_lst[0].delete()
         else:  # New asset!
-            asset = Asset(match=self.key(), market_ref=ref,
+            asset = Asset(match=self.key(),
                           name=stock_name_key, shares=num_shares)
             asset.put()
         stock = markets.util.get_stock(stock_name)
-        import logging
-        logging.info(stock_name.name + ' - ' + str(stock.value) + ' - ' + str(num_shares))
         ammount = stock.value * num_shares
         if asset.market_ref == 0:  # If it is Brazil I need to convert to dollars
             ammount /= stock.market.exchange_rate
@@ -74,7 +72,6 @@ class Match(db.Model):
 
 class Asset(db.Model):
     match = db.ReferenceProperty(Match, collection_name="assets")
-    market_ref = db.IntegerProperty()
     name = db.ReferenceProperty(StockName)
     shares = db.IntegerProperty()
 

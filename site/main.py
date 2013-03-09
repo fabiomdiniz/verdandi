@@ -60,7 +60,11 @@ def battle():
     return {'mtm_now': round(matches[0].mtm_now, 2), 'mtm_before': round(matches[0].mtm_before, 2),
             'ai_mtm_now': round(matches[1].mtm_now, 2), 'ai_mtm_before': round(matches[1].mtm_before, 2),
             'ai_name': game.models.PLAYERS[matches[1].player],
-            'assets': matches[0].assets}
+            'assets': matches[0].assets,
+            'active_markets': matches[0].market_refs,
+            'money_available': round(matches[0].money_available, 2),
+            'ai_match_key': matches[1].key(),
+            'match_key': matches[0].key()}
 
 
 @route('/clear_market_database')

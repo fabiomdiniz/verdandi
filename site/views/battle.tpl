@@ -179,32 +179,87 @@
     <table id="portfolio_table" class="table table-bordered table-striped table-hover">
       <thead>
         <tr>
-          <th>#</th>
           <th>Market</th>
           <th>Code</th>
           <th>Name</th>
           <th>Quantity</th>
-          <th>Price</th>
-          <th>Change</th>
         </tr>
       </thead>
       <tbody>
         %for i, asset in enumerate(assets):
         <tr>
-          <td>{{ i+1 }}</td>
-          <td>{{ asset.market_ref }}</td>
+          <td>{{ asset.name.market_ref }}</td>
           <td>{{ asset.name.code }}</td>
           <td>{{ asset.name.name }}</td>
           <td>{{ asset.shares }}</td>
-          <td>-</td>
-          <td>-</td>
         </tr>
         %end
       </tbody>
     </table>
 
   </div>
-  <div class="tab-pane" id="sellbuy">2</div>
+  <div class="tab-pane well form-horizontal" id="sellbuy">
+    <h5 >Available Money: $<span id="money"> 10,000.00</h5>
+    <div class="progress">
+      <div id="progressbar" class="bar bar-info" style="width: 100%;"></div>
+      <div id="buybar" class="bar" style="width: 0%;"></div>
+      <div id="sellbar" class="bar bar-success" style="width: 0%;"></div>
+    </div>
+
+    <div class="row-fluid">
+      <div class="span7">
+        <div class="control-group">
+          <label class="control-label" for="stock_name">Stock: </label>
+          <div class="controls">
+            <input autocomplete="off" type="text" class="input-large" id="stock_name">
+            <button id="fetch_history_day" type="button" class="btn">Fetch Hourly History</button>
+            <button id="fetch_history" type="button" class="btn">Fetch Daily History</button>
+          </div>
+        </div>
+        <div class="demo-container">
+          <div id="placeholder" class="demo-placeholder"></div>
+        </div>
+      </div>
+      <div class="span5 buysell_div">
+        <div class="control-group">
+          <label class="control-label" for="price">Price: </label>
+          <div class="controls">
+            <div class="input-prepend input-append">
+              <span class="add-on">$</span>
+              <input type="text" disabled class="text-right input-small" id="price">
+              <span class="text-right add-on">@ <span id="stock_time">--:--</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="price">Quantity Owned: </label>
+          <div class="controls">
+              <input type="text" disabled class="text-right input-small" id="quantity_owned">
+          </div>
+        </div>
+        <div class="control-group" id="ammount_group">
+          <label class="control-label" for="quantity">Quantity: </label>
+          <div class="controls">
+            <div class="input-append">
+              <input type="text" class="text-right input-small" id="quantity">
+              <span id="ammount" class="text-right add-on">$ --,---.--</span>
+            </div>
+            <button id="buy" type="button" class="btn">Buy</button>
+          </div>
+        </div>
+        <div class="control-group" id="ammount_s_group">
+          <label class="control-label" for="quantity">Quantity: </label>
+          <div class="controls">
+            <div class="input-append">
+              <input type="text" class="text-right input-small" id="quantity_s">
+              <span id="ammount_s" class="text-right add-on">$ --,---.--</span>
+            </div>
+            <button id="sell" type="button" class="btn">Sell</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="tab-pane" id="trends">3</div>
   <div class="tab-pane" id="settings">4</div>
 </div>
@@ -902,10 +957,23 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/jquery.flot.js"></script>
+    <script src="static/js/jquery.flot.time.js"></script>
+    <script src="static/js/bootstrap.js"></script>
     <script src="static/js/bootswatch.js"></script>
     <script src="static/js/battle.js"></script>
-
-
+    <script src="static/js/buysell.js"></script>
+    <script type="text/javascript">
+    function get_active_markets() {
+        return "{{ active_markets }}";
+    }
+    var original_money = 20000;
+    var available_money = {{ money_available }};
+    var ai_match_key = '{{ ai_match_key }}';
+    var match_key = '{{ match_key }}';
+      $(function (){
+        update_total(0);
+      });
+    </script>
   </body>
 </html>

@@ -14,7 +14,7 @@ def get_exchange():
 
 
 def last_weekdays(num):
-    out = [prev_weekday(datetime.today())]
+    out = [prev_weekday(today_date())]
     for i in range(1, num):
         out.append(prev_weekday(out[i-1]))
     return out
