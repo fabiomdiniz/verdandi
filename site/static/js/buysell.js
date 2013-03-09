@@ -95,7 +95,6 @@
     }
 
     $(function (){
-        $('#buy').click(add_row);
 
         $('.market_checks').click(function() {
           setTimeout(function() {

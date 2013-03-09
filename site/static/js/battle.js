@@ -11,10 +11,24 @@ var options = {
         },
         xaxis: {
             mode: "time",
-            timeformat: "%H:%M"
+            timeformat: "%H:%M",
         }
     };
 
+function generic_buy_sell(button_id, val) {
+    $(button_id).button('loading');
+    var jqxhr = $.getJSON('/api/buy_sell?match=' + match_key + '&stock_name=' + current_key + '&num_shares=' +  val + ';', function() {
+        update_total(-1*val);
+        $("#quantity").val(0);
+        $("#quantity").change();
+        $("#quantity_s").val(0);
+        $("#quantity_s").change();
+        $(button_id).button('reset');
+    }).error(function(e) {
+     alert(e);
+     $(button_id).button('reset'); 
+    });     
+}
 
 function generic_fetch(button_id, url) {
     $(button_id).button('loading');
@@ -46,6 +60,10 @@ $(document).ready(function() {
         return false;
     })*/
 
+    //timezoneJS.timezone.zoneFileBasePath = "static/tz";
+    //timezoneJS.timezone.defaultZoneFile = [];
+    //timezoneJS.timezone.init({async: false});
+
 
     $("#fetch_history_day").click(function () {
         options.xaxis.timeformat = "%H:%M";
@@ -74,5 +92,16 @@ $(document).ready(function() {
         else {
           $("#sellbar").css('width', '0%');
         }
-    });    
+    });
+
+    $('#buy').click(function() {
+        val = parseFloat($("#quantity").val());
+        generic_buy_sell('#buy', val);
+    });
+
+    $('#sell').click(function() {
+        val = -1*parseFloat($("#quantity_s").val());
+        generic_buy_sell('#sell', val);
+    });
+
 });

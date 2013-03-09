@@ -20,6 +20,12 @@ indexes:
   - name: date
   - name: ref
   - name: time
+
+- kind: Market
+  properties:
+  - name: date
+  - name: ref
+  - name: time
     direction: desc
 
 - kind: Market

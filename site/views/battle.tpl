@@ -958,7 +958,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="static/js/jquery.flot.js"></script>
-    <script src="static/js/jquery.flot.time.js"></script>
     <script src="static/js/bootstrap.js"></script>
     <script src="static/js/bootswatch.js"></script>
     <script src="static/js/battle.js"></script>

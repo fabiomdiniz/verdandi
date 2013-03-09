@@ -259,6 +259,8 @@
     var original_money = 10000;
     var available_money = 10000;
     $(function(){
+        $('#buy').click(add_row);
+
         $("#find_stock").click(function() {
             $(this).button('loading');
             $.getJSON('api/stockprice', { query: $("#stock_name").val() }, function(data) {

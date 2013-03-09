@@ -71,7 +71,7 @@ def get_stocks_days(stock_name, num_days=10):
 
 def get_stocks_in_day(stock_name, day):
     out = []
-    markets = Market.all(keys_only=False).filter("date =", day.date()).filter("ref =", stock_name.market_ref).order('-time').fetch(100)
+    markets = Market.all(keys_only=False).filter("date =", day.date()).filter("ref =", stock_name.market_ref).order('time').fetch(100)
     for market in markets:
         stock = Stock.all().filter("market =", market.key()).filter('name = ', stock_name.key()).get()
         if not stock is None:

@@ -31,7 +31,7 @@ class Match(db.Model):
         for asset in self.assets:
             stock = markets.util.get_stock(asset.name)
             mtm_asset = stock.value * asset.shares
-            if asset.market_ref == 0:  # If it is Brazil I need to convert to dollars
+            if asset.name.market_ref == 0:  # If it is Brazil I need to convert to dollars
                 mtm_asset /= stock.market.exchange_rate
             mtm += mtm_asset
         return mtm + self.money_available
@@ -50,21 +50,26 @@ class Match(db.Model):
         stock_name_key = stock_name.key()
         ref = stock_name.market_ref
         asset_lst = Asset.all().filter('match = ', self.key())
-        asset_lst.filter('market_ref = ', ref)
         asset_lst.filter('name = ', stock_name_key).fetch(1)
         if asset_lst.count():  # Asset exists!
-            asset_lst[0].shares += num_shares
-            if asset_lst[0].shares:
-                asset_lst[0].put()
+            import logging
+            asset = asset_lst[0]
+            logging.error(asset)
+            logging.error(num_shares)
+            logging.error(asset.shares)
+            asset.shares += num_shares
+            logging.error(asset.shares)
+            if asset.shares > 0:
+                asset.put()
             else:  # Asset vanished!
-                asset_lst[0].delete()
+                asset.delete()
         else:  # New asset!
             asset = Asset(match=self.key(),
                           name=stock_name_key, shares=num_shares)
             asset.put()
         stock = markets.util.get_stock(stock_name)
         ammount = stock.value * num_shares
-        if asset.market_ref == 0:  # If it is Brazil I need to convert to dollars
+        if ref == 0:  # If it is Brazil I need to convert to dollars
             ammount /= stock.market.exchange_rate
         self.money_available -= ammount
         self.put()

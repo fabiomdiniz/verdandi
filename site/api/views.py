@@ -1,6 +1,8 @@
  # -*- coding: utf-8 -*-
+from google.appengine.ext import db
+from google.appengine.api.users import get_current_user
 
-from bottle import route, request
+from bottle import route, request, abort
 
 import json
 import calendar
@@ -123,3 +125,16 @@ def api_num_shares():
     market_ref = [m[0] for m in MARKETS].index(market_name)
     stock_name = markets.util.get_stock_name(market_ref, code, keys_only=True)
     return str(getattr(game.util.get_asset(match_key, stock_name), 'shares', 0))
+
+
+@route('/api/buy_sell')
+def api_buy_sell():
+    match_key = request.query.match
+    stock_name = request.query.stock_name
+    shares = int(request.query.num_shares)
+    match = db.Model.get(match_key)
+    if get_current_user() == match.user:
+        match.buy_sell_asset_keys([stock_name], [shares])
+        return json.dumps('OK')
+    else:
+        abort(401, "NOPE")
