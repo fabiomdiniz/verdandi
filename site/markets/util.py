@@ -39,10 +39,8 @@ def today_date():
     return datetime.combine(datetime.today().date(), time())
 
 
-def last_date():
-    day_delta = 0  # TODO
-    hours_delta = 0  # TODO
-    return datetime.combine((datetime.today() - timedelta(days=day_delta, hours=hours_delta)).date(), time())
+def get_last_date(market_ref):
+    return Market.all().filter("ref = ", market_ref).order('-date').get().date
 
 
 def get_market(ref, date=None, keys_only=False):
@@ -71,7 +69,7 @@ def get_stocks_days(stock_name, num_days=10):
 
 def get_stocks_in_day(stock_name, day):
     out = []
-    markets = Market.all(keys_only=False).filter("date =", day.date()).filter("ref =", stock_name.market_ref).order('time').fetch(100)
+    markets = Market.all(keys_only=False).filter("date =", day).filter("ref =", stock_name.market_ref).order('time').fetch(100)
     for market in markets:
         stock = Stock.all().filter("market =", market.key()).filter('name = ', stock_name.key()).get()
         if not stock is None:

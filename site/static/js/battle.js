@@ -73,7 +73,7 @@ $(document).ready(function() {
     $("#fetch_history_day").click(function () {
         options.xaxis.timeformat = "%H:%M";
         options.xaxis.minTickSize = [1, "hour"],
-        generic_fetch("#fetch_history_day", '/api/stockhistoryday?date=2013-03-08&stamp=1&query=');
+        generic_fetch("#fetch_history_day", '/api/stockhistoryday?stamp=1&query=');
     });
 
     $("#fetch_history").click(function () {

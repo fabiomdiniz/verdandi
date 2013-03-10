@@ -31,6 +31,7 @@ def stockprice(stock_name):
     stock = markets.util.get_stock(stock_name)
     return {'value': round(stock.value / stock.market.exchange_rate, 2),
             'time': stock.market.time.strftime('%H:%M'),
+            'date': stock.market.date.strftime('%Y-%m-%d'),
             'key': str(stock_name.key()),
             'name': stock_name.name}
 
@@ -70,17 +71,20 @@ def api_stockhistoryday():
         stamp_func = get_stamp
     else:
         stamp_func = lambda x: x.strftime('%H:%M')
-    date = getattr(request.query, 'date', None)
-    if date:
-        try:
-            dt = datetime.datetime.strptime(date, '%Y-%m-%d')
-        except:
-            return "Invalid date format"
-    else:
-        dt = datetime.datetime.now()
 
     market_ref = [m[0] for m in MARKETS].index(market_name)
     stock_name = markets.util.get_stock_name(market_ref, code)
+
+    date = getattr(request.query, 'date', None)
+    if date:
+        try:
+            dt = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        except:
+            return "Invalid date format"
+    else:
+        #dt = datetime.datetime.now()
+        dt = markets.util.get_last_date(market_ref)
+
     stocks = markets.util.get_stocks_in_day(stock_name, dt)
 
     values = [[stamp_func(e[0]), e[1].value/e[2]] for e in stocks]

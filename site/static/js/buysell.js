@@ -41,9 +41,9 @@
                                      '<td>' + numberWithCommas(current_total) + '</td>' +
                                      '<td><i class="icon-remove"></i></td>' +
                                      '</tr>');
-        update_total(-1*current_total);
         stock_keys.push(current_key);
         stock_quantities.push(current_quantity);
+        update_total(-1*current_total);
         $("#quantity").val(0);
         $("#quantity").change();
         update_forms();
