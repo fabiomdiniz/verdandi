@@ -3,6 +3,11 @@
     font-size: 40px;
 }
 
+.perc {
+    line-height: 6.5em;
+    font-size: 25px;
+}
+
 #portfolio_table td, #portfolio_table th {
    text-align: center;   
 }

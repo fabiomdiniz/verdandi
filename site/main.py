@@ -3,6 +3,7 @@
 from bottle import route, run, view, static_file, request, get, post, redirect
 import os.path
 
+import ai
 import api.views
 import markets
 import markets.views
@@ -64,13 +65,20 @@ def battle():
     matches = game.util.get_matches()
     if not len(matches):
         redirect('/')
+    if matches[0].mtm_now <= matches[1].mtm_now:
+        quote = ai.AIS[matches[1].player].get_quote()
+    else:
+        quote = ''
+
     return {'mtm_now': round(matches[0].mtm_now, 2), 'mtm_before': round(matches[0].mtm_before, 2),
             'ai_mtm_now': round(matches[1].mtm_now, 2), 'ai_mtm_before': round(matches[1].mtm_before, 2),
             'ai_name': game.models.PLAYERS[matches[1].player],
             'active_markets': matches[0].market_refs,
             'money_available': round(matches[0].money_available, 2),
             'ai_match_key': matches[1].key(),
-            'match_key': matches[0].key()}
+            'match_key': matches[0].key(),
+            'perc': matches[0].get_perc(), 'ai_perc': matches[1].get_perc(),
+            'quote': quote}
 
 
 @route('/portfolio')

@@ -26,6 +26,9 @@ class Match(db.Model):
 
     market_refs = db.StringProperty()  # Default to all markets
 
+    def get_perc(self):
+        return (self.mtm_now - self.mtm_before) / self.mtm_before if self.mtm_before else 0.0
+
     def calc_mtm(self):
         mtm = 0.0
         for asset in self.assets:

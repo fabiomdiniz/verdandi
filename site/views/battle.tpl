@@ -120,23 +120,62 @@
 
   <!-- Headings & Paragraph Copy -->
   <div class="row">
-
     <div class="span4">
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span8">
       <h3>You</h3>
-      <p>Total Assets Now: {{ mtm_now }}</p>
-      <p>Total Assets Before: {{ mtm_before }}</p>
+      <p>Total Assets Now: ${{ format(mtm_now, ',.2f') }}</p>
+      <p>Total Assets Before: ${{ format(mtm_before, ',.2f') }}</p>
+    </div>
+    <div class="span4">
+      % if perc >= 0:
+      <p class="text-success perc">+
+      % else:
+      <p class="text-error perc">
+      % end
+        {{ round(100*perc, 2) }}%
+      </p>
+    </div>
+  </div>
+</div>
+
     </div>
 
     <div class="span4 text-center">
       <h3></h3>
-      <p class="versus">Versus</p>
+      % if quote == '':
+      <p class="versus">You Win!</p>
+      % else:
+      <p class="versus">You Lose!</p>
+      % end:
       <p></p>
     </div>
 
     <div class="span4 text-right">
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span4">
+      % if ai_perc >= 0:
+      <p class="text-success perc">+
+      % else:
+      <p class="text-error perc">
+      % end
+        {{ round(100*ai_perc, 2) }}%
+      </p>
+    </div>
+    <div class="span8">
       <h3>{{ ai_name }}</h3>
-      <p>Total Assets Now: {{ ai_mtm_now }}</p>
-      <p>Total Assets Before: {{ ai_mtm_before }}</p>
+      <p>Total Assets Now: ${{ format(ai_mtm_now, ',.2f') }}</p>
+      <p>Total Assets Before: ${{ format(ai_mtm_before, ',.2f') }}</p>
+    </div>
+  </div>
+</div>
+
+
+
     </div>
 
 
@@ -144,16 +183,14 @@
   
   <div class="row">
     <div class="span6">
-      <blockquote>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-        <small>Someone famous in <cite title="Source Title">Source Title</cite></small>
-      </blockquote>
     </div>
     <div class="span6">
+%if quote != '':
       <blockquote class="pull-right">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-        <small>Someone famous in <cite title="Source Title">Source Title</cite></small>
+        <p>{{ quote }}</p>
+        <small>Verdandi</small>
       </blockquote>
+%end
     </div>
   </div>
 
