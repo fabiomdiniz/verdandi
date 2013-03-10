@@ -1,6 +1,9 @@
  # -*- coding: utf-8 -*-
 
 from bottle import route, run, view, static_file, request, get, post, redirect
+
+from google.appengine.api import users
+
 import os.path
 
 import ai
@@ -78,7 +81,8 @@ def battle():
             'ai_match_key': matches[1].key(),
             'match_key': matches[0].key(),
             'perc': matches[0].get_perc(), 'ai_perc': matches[1].get_perc(),
-            'quote': quote}
+            'quote': quote,
+            'logout_url': users.create_logout_url("/")}
 
 
 @route('/portfolio')

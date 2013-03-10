@@ -69,7 +69,7 @@
                 <li><a href="/surrender?match={{ match_key }};">Surrender</a></li>
                 <li><a href="#">Something else here</a></li>
                 <li class="divider"></li>
-                <li><a href="#">Logout</a></li>
+                <li><a href="{{ logout_url }}">Logout</a></li>
               </ul>
             </li>
           </ul>
