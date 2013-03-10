@@ -1,8 +1,9 @@
  # -*- coding: utf-8 -*-
 from google.appengine.ext import db
 from google.appengine.api.users import get_current_user
+from google.appengine.api import users
 
-from bottle import route, request, abort
+from bottle import route, request, abort, response
 
 import json
 import calendar
@@ -142,3 +143,25 @@ def api_buy_sell():
         return json.dumps('OK')
     else:
         abort(401, "NOPE")
+
+
+@route('/api/total_dump')
+def total_dump():
+    if not users.is_current_user_admin():
+        abort(401, "NOPE")
+    values = []
+    for ref in range(len(MARKETS)):
+        values.append([ref])
+        latest_market = markets.util.get_market(ref)
+        stock_names = [s.name for s in markets.models.Stock.all().filter("market =", latest_market.key()).fetch(1000)]
+        stock_names.sort(key=lambda x: x.code)
+        values.append(['###DATE###'] + [s.code for s in stock_names])
+        for market in markets.models.Market.all().filter("ref =", ref).order('-date').order('-time').fetch(1000):
+            row = [market.get_datetime().strftime("%Y-%m-%d %H:%M")]
+            row += [getattr(markets.models.Stock.all().filter("market =", market.key()).filter('name =', name.key()).get(), 'value', 0.0) for name in stock_names]
+            values.append(row[:])
+
+    values = [';'.join(map(str, row)) for row in values]
+    response.set_header('Content-Disposition', 'attachment;filename=total_dump.csv')
+    response.content_type = 'text/csv'
+    return '\n'.join(values)

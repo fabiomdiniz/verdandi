@@ -2,12 +2,17 @@
 
 from google.appengine.ext import db
 
+import datetime
+
 
 class Market(db.Model):
     ref = db.IntegerProperty()
     exchange_rate = db.FloatProperty(default=1.0)
     date = db.DateProperty(auto_now_add=False)
     time = db.TimeProperty(auto_now_add=False)
+
+    def get_datetime(self):
+        return datetime.datetime.combine(self.date, self.time)
 
 
 class StockName(db.Model):
