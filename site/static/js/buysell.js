@@ -17,7 +17,7 @@
 
     function update_total(value) {
       available_money = available_money + value;
-      used_perc = (100*available_money/original_money).toFixed(0);
+      used_perc = (100*available_money/original_money);
       $("#progressbar").css('width', used_perc +'%');
       //$("#usedbar").css('width', (100-used_perc) +'%');
       $("#money").html(numberWithCommas(available_money));
@@ -122,8 +122,8 @@
             current_quantity = $(this).val();
             if(total_value >= 0) {
               total_value = Math.min(available_money, total_value);
-              used_perc = (100*(available_money-total_value)/original_money).toFixed(0);
-              buy_perc = (100*(total_value)/original_money).toFixed(0);
+              used_perc = (100*(available_money-total_value)/original_money);
+              buy_perc = (100*(total_value)/original_money);
               $("#progressbar").css('width', used_perc +'%');
               $("#buybar").css('width', buy_perc +'%');
             }

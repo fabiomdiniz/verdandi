@@ -64,13 +64,12 @@
             <li><a href="#">Link</a></li>
             <li class="divider-vertical"></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
+                <li><a href="/surrender?match={{ match_key }};">Surrender</a></li>
                 <li><a href="#">Something else here</a></li>
                 <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
+                <li><a href="#">Logout</a></li>
               </ul>
             </li>
           </ul>
@@ -168,35 +167,13 @@
     <h1>Next Strategy</h1>
   </div>
     <ul class="nav nav-tabs">
-    <li><a href="#portfolio" data-toggle="tab">Portfolio</a></li>
+    <li><a id="portfolio_link" href="#portfolio" data-toggle="tab">Portfolio</a></li>
     <li><a href="#sellbuy" data-toggle="tab">Buy/Sell</a></li>
     <li><a href="#trends" data-toggle="tab">Trends</a></li>
     <li><a href="#settings" data-toggle="tab">???</a></li>
   </ul>
   <div class="tab-content">
   <div class="tab-pane active" id="portfolio">
-
-    <table id="portfolio_table" class="table table-bordered table-striped table-hover">
-      <thead>
-        <tr>
-          <th>Market</th>
-          <th>Code</th>
-          <th>Name</th>
-          <th>Quantity</th>
-        </tr>
-      </thead>
-      <tbody>
-        %for i, asset in enumerate(assets):
-        <tr>
-          <td>{{ asset.name.market_ref }}</td>
-          <td>{{ asset.name.code }}</td>
-          <td>{{ asset.name.name }}</td>
-          <td>{{ asset.shares }}</td>
-        </tr>
-        %end
-      </tbody>
-    </table>
-
   </div>
   <div class="tab-pane well form-horizontal" id="sellbuy">
     <h5 >Available Money: $<span id="money"> 10,000.00</h5>

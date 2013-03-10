@@ -4,6 +4,7 @@ from bottle import route, run, view, static_file, request, get, post, redirect
 import os.path
 
 import api.views
+import markets
 import markets.views
 import markets.models
 import game.views
@@ -17,7 +18,11 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 @get('/')
 @view('index')
 def index():
-    return dict()
+    matches = game.util.get_matches()
+    if len(matches):
+        redirect('/battle')
+    else:
+        return dict()
 
 
 @post('/')
@@ -57,14 +62,29 @@ def reference():
 @view('battle')
 def battle():
     matches = game.util.get_matches()
+    if not len(matches):
+        redirect('/')
     return {'mtm_now': round(matches[0].mtm_now, 2), 'mtm_before': round(matches[0].mtm_before, 2),
             'ai_mtm_now': round(matches[1].mtm_now, 2), 'ai_mtm_before': round(matches[1].mtm_before, 2),
             'ai_name': game.models.PLAYERS[matches[1].player],
-            'assets': matches[0].assets,
             'active_markets': matches[0].market_refs,
             'money_available': round(matches[0].money_available, 2),
             'ai_match_key': matches[1].key(),
             'match_key': matches[0].key()}
+
+
+@route('/portfolio')
+@view('portfolio')
+def portfolio():
+    matches = game.util.get_matches()
+    return {'assets': matches[0].assets, 'MARKETS': markets.MARKETS}
+
+
+@route('/surrender')
+def surrender():
+    matches = game.util.get_matches()
+    map(lambda x: x.delete(), matches)
+    redirect("/")
 
 
 @route('/clear_market_database')

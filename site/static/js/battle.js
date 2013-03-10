@@ -15,6 +15,12 @@ var options = {
         }
     };
 
+function update_portfolio() {
+    $.get('/portfolio', function(data) {
+      $('#portfolio').html(data);
+    });
+}
+
 function update_owned() {
     $.getJSON('/api/num_shares?match=' + match_key + '&query=' + $("#stock_name").val() + ';', function(data) {
         $("#quantity_owned").val(data);
@@ -29,10 +35,11 @@ function generic_buy_sell(button_id, val) {
         $("#quantity").change();
         $("#quantity_s").val(0);
         $("#quantity_s").change();
+        $("#ammount_s_group").removeClass("error");
+        $("#ammount_group").removeClass("error");        
         update_owned();
         $(button_id).button('reset');
     }).error(function(e) {
-     alert(e);
      $(button_id).button('reset'); 
     });     
 }
@@ -68,7 +75,7 @@ $(document).ready(function() {
     //timezoneJS.timezone.zoneFileBasePath = "static/tz";
     //timezoneJS.timezone.defaultZoneFile = [];
     //timezoneJS.timezone.init({async: false});
-
+    update_portfolio();
 
     $("#fetch_history_day").click(function () {
         options.xaxis.timeformat = "%H:%M";
@@ -90,7 +97,7 @@ $(document).ready(function() {
         if(current_quantity_s > 0) {
           total_value = Math.min(original_money, total_value);
           //used_perc = (100*(available_money+total_value)/original_money).toFixed(0);
-          sell_perc = (100*(total_value)/original_money).toFixed(0);
+          sell_perc = (100*(total_value)/original_money);
           //$("#progressbar").css('width', used_perc +'%');
           $("#sellbar").css('width', sell_perc +'%');
         }
@@ -100,13 +107,31 @@ $(document).ready(function() {
     });
 
     $('#buy').click(function() {
+        if(current_key == '') {
+            return ;
+        }
         val = parseFloat($("#quantity").val());
-        generic_buy_sell('#buy', val);
+        if((available_money - current_total) >= 0 && val > 0) {
+            generic_buy_sell('#buy', val);
+        }
+        else {
+           $("#ammount_group").addClass("error");
+        }
     });
 
     $('#sell').click(function() {
-        val = -1*parseFloat($("#quantity_s").val());
-        generic_buy_sell('#sell', val);
+        if(current_key == '') {
+            return ;
+        }
+        val = parseFloat($("#quantity_s").val());
+        if(val <= parseFloat($("#quantity_owned").val()) && val > 0) {
+            generic_buy_sell('#sell', -1*val);
+        }
+        else {
+           $("#ammount_s_group").addClass("error");
+        }
     });
+
+    $("#portfolio_link").click(update_portfolio);
 
 });
