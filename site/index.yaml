@@ -52,6 +52,12 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: Stock
+  properties:
+  - name: market
+  - name: diff
+    direction: desc
+
 - kind: StockName
   properties:
   - name: __key__

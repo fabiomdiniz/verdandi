@@ -16,7 +16,7 @@ def fetch_market(ref):
         ref = int(ref)
         try:
             MARKETS[ref][1].get_market()
-            game.gameflow.update_matches()
+            game.gameflow.update_matches(ref)
         except ValueError as e:
             return ' - '.join([MARKETS[ref][0], repr(e)])
         else:

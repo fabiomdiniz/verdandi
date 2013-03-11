@@ -55,13 +55,8 @@ class Match(db.Model):
         asset_lst = Asset.all().filter('match = ', self.key())
         asset_lst.filter('name = ', stock_name_key).fetch(1)
         if asset_lst.count():  # Asset exists!
-            import logging
             asset = asset_lst[0]
-            logging.error(asset)
-            logging.error(num_shares)
-            logging.error(asset.shares)
             asset.shares += num_shares
-            logging.error(asset.shares)
             if asset.shares > 0:
                 asset.put()
             else:  # Asset vanished!
@@ -76,6 +71,10 @@ class Match(db.Model):
             ammount /= stock.market.exchange_rate
         self.money_available -= ammount
         self.put()
+
+    def sell_everything(self):
+        for asset in self.assets:
+            self.buy_sell_asset(asset.name, -1*asset.shares)
 
 
 class Asset(db.Model):

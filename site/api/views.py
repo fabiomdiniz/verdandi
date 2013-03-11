@@ -112,9 +112,8 @@ def api_get_matches():
         dict_match['user'] = str(match.user.nickname())
         dict_match['player'] = game.models.PLAYERS[match.player]
         dict_match['money'] = match.money_available
-        dict_match['equity_mtm_before'] = match.mtm_before
-        dict_match['equity_mtm'] = match.mtm_now
-        dict_match['total_mtm'] = match.mtm_now + match.money_available
+        dict_match['mtm_before'] = match.mtm_before
+        dict_match['mtm_now'] = match.mtm_now
         dict_match['easy_mode'] = match.easy_mode
         dict_match['assets'] = {}
         for asset in match.assets:

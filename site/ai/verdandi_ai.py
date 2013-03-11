@@ -2,13 +2,19 @@
 import os
 import random
 
-
-def update_match(match, coordinates):
-    pass
+import markets
+import markets.util
+from markets.models import Stock
 
 
 def think():
-    return {}
+    knowledge = {}
+    for comb in markets.markets_comb:
+        keys = [markets.util.get_market(ref).key() for ref in comb]
+        # 5 top perc change
+        stocks = Stock.all().filter("market IN", keys).order('-diff').fetch(5)
+        knowledge[comb] = [s.name for s in stocks]
+    return knowledge
 
 
 def get_quote():
