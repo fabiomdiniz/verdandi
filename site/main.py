@@ -85,11 +85,12 @@ def battle():
             'logout_url': users.create_logout_url("/")}
 
 
-@route('/portfolio')
+@route('/portfolio/<ref>')
+@route('/portfolio/')
 @view('portfolio')
-def portfolio():
+def portfolio(ref=0):
     matches = game.util.get_matches()
-    return {'assets': matches[0].assets, 'MARKETS': markets.MARKETS}
+    return {'assets': matches[int(ref)].assets, 'MARKETS': markets.MARKETS}
 
 
 @route('/surrender')

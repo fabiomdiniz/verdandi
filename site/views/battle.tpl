@@ -205,12 +205,15 @@
   </div>
     <ul class="nav nav-tabs">
     <li><a id="portfolio_link" href="#portfolio" data-toggle="tab">Portfolio</a></li>
+    <li><a id="ai_portfolio_link" href="#ai_portfolio" data-toggle="tab">AI Portfolio</a></li>
     <li><a href="#sellbuy" data-toggle="tab">Buy/Sell</a></li>
-    <li><a href="#trends" data-toggle="tab">Trends</a></li>
+    <li><a id="trends_link" href="#trends" data-toggle="tab">Trends</a></li>
     <li><a href="#settings" data-toggle="tab">???</a></li>
   </ul>
   <div class="tab-content">
   <div class="tab-pane active" id="portfolio">
+  </div>
+  <div class="tab-pane" id="ai_portfolio">
   </div>
   <div class="tab-pane well form-horizontal" id="sellbuy">
     <h5 >Available Money: $<span id="money"> 10,000.00</h5>
@@ -274,7 +277,9 @@
       </div>
     </div>
   </div>
-  <div class="tab-pane" id="trends">3</div>
+  <div class="tab-pane" id="trends">
+      <div id="trends_placeholder"></div>
+  </div>
   <div class="tab-pane" id="settings">4</div>
 </div>
 <!--

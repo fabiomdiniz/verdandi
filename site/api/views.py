@@ -122,6 +122,41 @@ def api_get_matches():
     return json.dumps(out)
 
 
+@route('/api/match_history')
+def api_get_match_history():
+    matches = game.util.get_matches()
+    human_matches = game.models.MatchHistory.all().filter("match =", matches[0].key()).order('datetime').fetch(500)
+    ai_matches = game.models.MatchHistory.all().filter("match =", matches[1].key()).order('datetime').fetch(500)
+
+    stamp = getattr(request.query, 'stamp', False)
+    if stamp:
+        stamp_func = get_stamp
+    else:
+        stamp_func = lambda x: x.strftime('%Y-%m-%d')
+
+    human_values, ai_values = [[(stamp_func(e.datetime), e.mtm) for e in m_history]
+                               for m_history in (human_matches, ai_matches)]
+
+    return json.dumps([{'label': 'You', 'data': human_values}, {'label': game.models.PLAYERS[matches[1].player], 'data': ai_values}])
+
+
+@route('/api/matches_history')
+def api_get_matches_history():
+    matches = game.models.MatchHistory.all().order('datetime').fetch(500)
+    out = []
+    for match in matches:
+        dict_match = {}
+        dict_match['user'] = str(match.match.user.nickname())
+        dict_match['player'] = game.models.PLAYERS[match.match.player]
+        dict_match['money'] = match.money
+        dict_match['mtm'] = match.mtm
+        dict_match['assets'] = {}
+        for asset in match.assets:
+            dict_match['assets'][asset.stock.name.code] = [asset.shares, asset.stock.value]
+        out.append(dict_match)
+    return json.dumps(out)
+
+
 @route('/api/num_shares')
 def api_num_shares():
     match_key = request.query.match

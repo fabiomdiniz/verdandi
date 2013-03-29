@@ -1,3 +1,4 @@
+var trends_data;
 
 var current_total_s;
 var current_quantity_s;
@@ -16,8 +17,11 @@ var options = {
     };
 
 function update_portfolio() {
-    $.get('/portfolio', function(data) {
+    $.get('/portfolio/0', function(data) {
       $('#portfolio').html(data);
+    });
+    $.get('/portfolio/1', function(data) {
+      $('#ai_portfolio').html(data);
     });
 }
 
@@ -64,6 +68,18 @@ function generic_fetch(button_id, url) {
         
 }
 
+function get_trends() {
+    $.getJSON('/api/match_history?stamp=1', function(data) {
+        trends_data = data;
+    });
+}
+
+function update_trends() {
+    setTimeout(function () {
+        $.plot("#trends_placeholder", trends_data, options);
+    }, 200)
+}
+
 $(document).ready(function() {
    // $('.nav-tabs a').on('click', false);
     /*$('.nav-tabs a').click(function (e) {
@@ -76,6 +92,8 @@ $(document).ready(function() {
     //timezoneJS.timezone.defaultZoneFile = [];
     //timezoneJS.timezone.init({async: false});
     update_portfolio();
+
+    get_trends();
 
     $("#fetch_history_day").click(function () {
         options.xaxis.timeformat = "%H:%M";
@@ -133,5 +151,5 @@ $(document).ready(function() {
     });
 
     $("#portfolio_link").click(update_portfolio);
-
+    $("#trends_link").click(update_trends);
 });

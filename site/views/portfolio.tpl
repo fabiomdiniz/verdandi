@@ -1,4 +1,4 @@
-<table id="portfolio_table" class="table table-bordered table-striped table-hover">
+<table class="portfolio_table table table-bordered table-striped table-hover">
   <thead>
     <tr>
       <th>Market</th>

@@ -47,6 +47,11 @@ indexes:
   - name: user
   - name: player
 
+- kind: MatchHistory
+  properties:
+  - name: match
+  - name: datetime
+
 - kind: Stock
   properties:
   - name: __key__

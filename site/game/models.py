@@ -2,7 +2,7 @@
 
 from google.appengine.ext import db
 
-from markets.models import StockName
+from markets.models import StockName, Stock
 import markets.util
 
 PLAYERS = (
@@ -31,12 +31,15 @@ class Match(db.Model):
 
     def calc_mtm(self):
         mtm = 0.0
+        stocks_list = []
         for asset in self.assets:
             stock = markets.util.get_stock(asset.name)
             mtm_asset = stock.value * asset.shares
+            stocks_list.append((stock, asset.shares))
             if asset.name.market_ref == 0:  # If it is Brazil I need to convert to dollars
                 mtm_asset /= stock.market.exchange_rate
             mtm += mtm_asset
+        self.save_history(stocks_list, mtm, self.money_available)
         return mtm + self.money_available
 
     def refresh_mtm(self):
@@ -76,10 +79,29 @@ class Match(db.Model):
         for asset in self.assets:
             self.buy_sell_asset(asset.name, -1*asset.shares)
 
+    def save_history(self, stocks_list, mtm, money):
+        history = MatchHistory(match=self.key(), mtm=mtm, money=money)
+        history.put()
+        for stock, shares in stocks_list:
+            AssetHistory(match=history.put(), stock=stock, shares=shares).put()
+
 
 class Asset(db.Model):
     match = db.ReferenceProperty(Match, collection_name="assets")
     name = db.ReferenceProperty(StockName)
+    shares = db.IntegerProperty()
+
+
+class MatchHistory(db.Model):
+    datetime = db.DateTimeProperty(auto_now_add=True)
+    match = db.ReferenceProperty(Match, collection_name="history")
+    mtm = db.FloatProperty()
+    money = db.FloatProperty()
+
+
+class AssetHistory(db.Model):
+    match = db.ReferenceProperty(MatchHistory, collection_name="assets")
+    stock = db.ReferenceProperty(Stock)
     shares = db.IntegerProperty()
 
 
