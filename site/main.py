@@ -90,7 +90,7 @@ def battle():
 @view('portfolio')
 def portfolio(ref=0):
     matches = game.util.get_matches()
-    return {'assets': matches[int(ref)].assets, 'MARKETS': markets.MARKETS}
+    return {'assets': matches[int(ref)].get_assets(), 'MARKETS': markets.MARKETS}
 
 
 @route('/surrender')

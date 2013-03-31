@@ -34,6 +34,7 @@ class Match(db.Model):
         stocks_list = []
         for asset in self.assets:
             stock = markets.util.get_stock(asset.name)
+            asset.update_values(stock)
             mtm_asset = stock.value * asset.shares
             stocks_list.append((stock, asset.shares))
             if asset.name.market_ref == 0:  # If it is Brazil I need to convert to dollars
@@ -45,6 +46,7 @@ class Match(db.Model):
     def refresh_mtm(self):
         self.mtm_before = self.mtm_now
         self.mtm_now = self.calc_mtm()
+        self.age_assets()
         self.put()
 
     def buy_sell_asset_keys(self, keys, lst_num_shares):
@@ -57,6 +59,10 @@ class Match(db.Model):
         ref = stock_name.market_ref
         asset_lst = Asset.all().filter('match = ', self.key())
         asset_lst.filter('name = ', stock_name_key).fetch(1)
+        stock = markets.util.get_stock(stock_name)
+        stock_price = stock.value
+        if ref == 0:  # If it is Brazil I need to convert to dollars
+            stock_price /= stock.market.exchange_rate
         if asset_lst.count():  # Asset exists!
             asset = asset_lst[0]
             asset.shares += num_shares
@@ -65,13 +71,10 @@ class Match(db.Model):
             else:  # Asset vanished!
                 asset.delete()
         else:  # New asset!
-            asset = Asset(match=self.key(),
-                          name=stock_name_key, shares=num_shares)
+            asset = Asset(match=self.key(), name=stock_name_key,
+                          shares=num_shares, current_price=round(stock_price, 2), current_diff=stock.diff)
             asset.put()
-        stock = markets.util.get_stock(stock_name)
-        ammount = stock.value * num_shares
-        if ref == 0:  # If it is Brazil I need to convert to dollars
-            ammount /= stock.market.exchange_rate
+        ammount = round(stock_price * num_shares, 2)
         self.money_available -= ammount
         self.put()
 
@@ -85,11 +88,32 @@ class Match(db.Model):
         for stock, shares in stocks_list:
             AssetHistory(match=history.put(), stock=stock, shares=shares).put()
 
+    def age_assets(self):
+        for asset in self.assets:
+            asset.new_asset = False
+            asset.put()
+
+    def get_assets(self):
+        assets = self.assets
+        return ([a for a in assets if a.new_asset], [a for a in assets if not a.new_asset])
+
 
 class Asset(db.Model):
     match = db.ReferenceProperty(Match, collection_name="assets")
     name = db.ReferenceProperty(StockName)
     shares = db.IntegerProperty()
+    new_asset = db.BooleanProperty(default=True)
+    current_price = db.FloatProperty(default=0.0)
+    current_diff = db.FloatProperty(default=0.0)
+
+    def update_values(self, stock):
+        if stock.name.market_ref == 0:
+            rate = stock.market.exchange_rate
+        else:
+            rate = 1.0
+        self.current_price = round(stock.value / rate, 2)
+        self.current_diff = stock.diff
+        self.put()
 
 
 class MatchHistory(db.Model):
@@ -103,6 +127,8 @@ class AssetHistory(db.Model):
     match = db.ReferenceProperty(MatchHistory, collection_name="assets")
     stock = db.ReferenceProperty(Stock)
     shares = db.IntegerProperty()
+    price = db.FloatProperty(default=0.0)
+    perc = db.FloatProperty(default=0.0)
 
 
 def clear_db():
