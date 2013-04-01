@@ -16,6 +16,22 @@ var options = {
         }
     };
 
+var trend_options = {
+        lines: {
+            show: true
+        },    
+        points: {
+            show: true
+        },
+        yaxis: {
+            axisLabel: "Total Assets ($)"
+        },
+        xaxis: {
+            mode: "categories",
+            axisLabel: "Update time (UTC)"
+        }
+    };
+
 function update_portfolio() {
     $.get('/portfolio/0', function(data) {
       $('#portfolio').html(data);
@@ -69,14 +85,14 @@ function generic_fetch(button_id, url) {
 }
 
 function get_trends() {
-    $.getJSON('/api/match_history?stamp=1', function(data) {
+    $.getJSON('/api/match_history', function(data) {
         trends_data = data;
     });
 }
 
 function update_trends() {
     setTimeout(function () {
-        $.plot("#trends_placeholder", trends_data, options);
+        $.plot("#trends_placeholder", trends_data, trend_options);
     }, 200)
 }
 

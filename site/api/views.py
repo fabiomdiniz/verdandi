@@ -132,7 +132,7 @@ def api_get_match_history():
     if stamp:
         stamp_func = get_stamp
     else:
-        stamp_func = lambda x: x.strftime('%Y-%m-%d')
+        stamp_func = lambda x: x.strftime("%m-%d %H:%M")
 
     human_values, ai_values = [[(stamp_func(e.datetime), e.mtm) for e in m_history]
                                for m_history in (human_matches, ai_matches)]
