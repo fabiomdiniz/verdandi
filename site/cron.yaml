@@ -1,7 +1,7 @@
 cron:
 - description: Update Ibovespa
   url: /cron/fetch_market/0
-  schedule: every 30 minutes from 10:30 to 18:00
+  schedule: every 30 minutes from 10:33 to 18:03
   timezone: America/Sao_Paulo
 
 - description: Update Nasdaq-100
@@ -11,5 +11,5 @@ cron:
 
 - description: Update Dow Jones Composite
   url: /cron/fetch_market/2
-  schedule: every 30 minutes from 10:00 to 16:30
+  schedule: every 30 minutes from 10:05 to 16:35
   timezone: US/Eastern
