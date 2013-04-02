@@ -155,7 +155,7 @@
               <h4>Markets</h4>
               <p>
                 <div class="btn-group" data-toggle="buttons-checkbox">
-                  <button type="button" class="market_checks btn btn-primary">Ibovespa</button>
+                  <button type="button" class="hide market_checks btn btn-primary">Ibovespa</button>
                   <button type="button" class="market_checks btn btn-primary">Nasdaq-100</button>
                   <button type="button" class="market_checks btn btn-primary">Dow Jones Composite</button>
                 </div>

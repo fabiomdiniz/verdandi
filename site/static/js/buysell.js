@@ -164,5 +164,6 @@
           $("#difficulty").val($(this).prevAll().length);
         })
         $(".difficulty_toggle:eq(0)").click();
-        $('.market_checks:eq(0)').click();
+        $('.market_checks:eq(1)').click();
+        $('.market_checks:eq(2)').click();
     })

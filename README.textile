@@ -1,3 +1,5 @@
 h1. Verdandi
 
 Stock Market All-Knowing Maiden
+
+http://meyjarverdandi.appspot.com/

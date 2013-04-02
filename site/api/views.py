@@ -24,6 +24,8 @@ def get_stamp(date_obj):
 
 @route('/api/stockname')
 def api_stockname():
+    if not request.query.markets:
+        return json.dumps([])
     names = markets.models.StockName.all().filter('market_ref IN', map(int, request.query.markets.split(';'))).fetch(5000)
     return json.dumps([' - '.join([MARKETS[s.market_ref][0] + ':' + s.code, s.name]) for s in names])
 

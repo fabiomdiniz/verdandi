@@ -28,7 +28,8 @@ var trend_options = {
         },
         xaxis: {
             mode: "categories",
-            axisLabel: "Update time (UTC)"
+            axisLabel: "Update time (UTC)",
+            show: false
         }
     };
 
